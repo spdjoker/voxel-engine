@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.12)
 project(world VERSION 0.0.1)
 
@@ -30,8 +29,15 @@ message(${GLFW_LIBRARIES})
 set(SOURCES
   src/main.cpp
 
-  src/Application.hpp
-  src/Application.cpp
+  src/application.hpp
+  src/application.cpp
+
+  src/engine/input_enums.hpp
+  src/engine/input.hpp
+  src/engine/input.cpp
+
+  src/types/vector2i.hpp
+  src/types/vector2i.cpp
   )
 
 # Console Build (DEBUG)

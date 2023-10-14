@@ -1,9 +1,17 @@
 #ifndef JKR_APPLICATION_HPP
 #define JKR_APPLICATION_HPP
 
+#include "engine/input.hpp"
+
 class GLFWwindow;
 
-struct Application {
+class Application {
+  bool isRunning;
+  GLFWwindow* window;
+  Input m_input;
+
+public:
+
   Application();
   ~Application();
 
@@ -13,11 +21,10 @@ struct Application {
   void render();
   void clean();
 
+  void quit();
+  
+  const Input& input() const;
   bool running() const;
-
-private:
-  bool isRunning;
-  GLFWwindow* window;
 };
 
 #endif // !JKR_APPLICATION_HPP
