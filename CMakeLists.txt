@@ -36,9 +36,27 @@ set(SOURCES
   src/engine/input.hpp
   src/engine/input.cpp
 
+  src/graphics/shader.hpp
+  src/graphics/shader.cpp
+  src/graphics/texture.hpp
+  src/graphics/texture.cpp
+  src/graphics/objects/vao.hpp
+  src/graphics/objects/vao.cpp
+  src/graphics/objects/vbo.hpp
+  src/graphics/objects/vbo.cpp
+  src/graphics/objects/ebo.hpp
+  src/graphics/objects/ebo.cpp
+
   src/types/vector2i.hpp
   src/types/vector2i.cpp
+  src/types/vector3f.hpp
+  src/types/vector3f.cpp
+
+  src/util/stb_image.h
   )
+
+# Preprocessor Definitions 
+add_definitions(-DSTB_IMAGE_IMPLEMENTATION)
 
 # Console Build (DEBUG)
 add_executable(${BUILD_NAME} ${SOURCES})
