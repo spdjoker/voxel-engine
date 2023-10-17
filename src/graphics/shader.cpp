@@ -1,4 +1,5 @@
 #include "shader.hpp"
+#include "types/matrix4.hpp"
 #include "types/vector3f.hpp"
 #include <GL/glew.h>
 #include <cstring>
@@ -90,12 +91,20 @@ int Shader::getUniform(const char *uniform) {
   return glGetUniformLocation(shaderID, uniform);
 }
 
-void Shader::setUniform3fv(int uniform, Vector3f* vec3, int count) {
+void Shader::setUniformMat4(int uniform, const Matrix4& mat4) {
+  glUniformMatrix4fv(uniform, 1, GL_FALSE, mat4.ptr());
+}
+
+void Shader::setUniformVec3f(int uniform, const Vector3f* vec3, int count) {
   glUniform3fv(uniform, count, (float*)vec3);
 }
 
-void Shader::setUniform3f(int uniform, const Vector3f& vec3) {
+void Shader::setUniformVec3f(int uniform, const Vector3f& vec3) {
   glUniform3fv(uniform, 1, vec3.ptr());
+}
+
+void Shader::setUniformVec3f(int uniform, const Color3f& color3) {
+  glUniform3fv(uniform, 1, color3.ptr());
 }
 
 void Shader::setUniform1i(int uniform, int unit) {

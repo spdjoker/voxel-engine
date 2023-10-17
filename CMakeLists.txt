@@ -23,19 +23,29 @@ set(GLEW_PATH ${GLEW_PATH}/glew-2.1.0)
 set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
 include_directories(${GLEW_PATH}/include)
 
-message(${GLFW_LIBRARIES})
+find_package(FMT_PATH NAMES fmt-10.1.0)
+set(FMT_PATH ${FMT_PATH}/fmt-10.1.0)
+set(FMT_LIBRARIES ${FMT_PATH}/build/libfmt.a)
+include_directories(${FMT_PATH}/include)
+
 # file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 
 set(SOURCES
   src/main.cpp
 
-  src/application.hpp
-  src/application.cpp
+  # SRC/ENGINE
+  src/components/sprite.hpp
+  src/components/camera.hpp
+  src/components/camera.cpp
 
+  # SRC/ENGINE
+  src/engine/application.hpp
+  src/engine/application.cpp
   src/engine/input_enums.hpp
   src/engine/input.hpp
   src/engine/input.cpp
-
+  
+  # SRC/GRAPHICS
   src/graphics/shader.hpp
   src/graphics/shader.cpp
   src/graphics/texture.hpp
@@ -47,11 +57,21 @@ set(SOURCES
   src/graphics/objects/ebo.hpp
   src/graphics/objects/ebo.cpp
 
+  # SRC/TYPES
+  src/types/matrix4.hpp
+  src/types/matrix4.cpp
   src/types/vector2i.hpp
   src/types/vector2i.cpp
   src/types/vector3f.hpp
   src/types/vector3f.cpp
+  src/types/color3f.hpp
+  src/types/color3f.cpp
 
+  # SRC/UI
+  src/ui/image.hpp
+  src/ui/image.cpp
+
+  # SRC/UTIL
   src/util/stb_image.h
   )
 
@@ -65,4 +85,5 @@ add_executable(${BUILD_NAME} ${SOURCES})
 target_link_libraries(${BUILD_NAME} PRIVATE ${GLEW_LIBRARIES})
 target_link_libraries(${BUILD_NAME} PRIVATE ${OPENGL_LIBRARIES})
 target_link_libraries(${BUILD_NAME} PRIVATE ${GLFW_LIBRARIES})
+target_link_libraries(${BUILD_NAME} PRIVATE ${FMT_LIBRARIES})
 target_compile_definitions(${BUILD_NAME} PRIVATE GLEW_STATIC)

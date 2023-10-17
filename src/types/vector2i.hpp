@@ -23,6 +23,8 @@ public:
   bool operator==(const Vector2i& other) const;
   bool operator!=(const Vector2i& other) const;
 
+  void print() const;
+
   static Vector2i Zero;
   static Vector2i One;
   static Vector2i Up;

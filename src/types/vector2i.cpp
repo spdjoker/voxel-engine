@@ -1,4 +1,5 @@
 #include "vector2i.hpp"
+#include <fmt/core.h>
 #include <cmath>
 
 Vector2i::Vector2i() : data{0,0} {}
@@ -46,6 +47,10 @@ bool Vector2i::operator==(const Vector2i& other) const {
 
 bool Vector2i::operator!=(const Vector2i& other) const {
   return data[0] != other.data[0] || data[1] != other.data[1];
+}
+
+void Vector2i::print() const {
+  fmt::println("Vector2i: ({:d},{:d})",data[0],data[1]);
 }
 
 Vector2i Vector2i::Zero   = Vector2i( 0, 0);

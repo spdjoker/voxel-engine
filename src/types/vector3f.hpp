@@ -1,6 +1,8 @@
 #ifndef JKR_VECTOR_3_FLOAT_HPP
 #define JKR_VECTOR_3_FLOAT_HPP
 
+class Matrix4;
+
 class Vector3f {
   float data[3];
 public:
@@ -19,13 +21,24 @@ public:
 
   void set(float x, float y, float z);
 
+  void normalize();
+
   double magnitude() const;
   float sqrMagnitude() const;
   const float* ptr() const;
   
   Vector3f& operator=(const Vector3f& other);
+  Vector3f& operator+=(const Vector3f& other);
+  Vector3f& operator-=(const Vector3f& other);
+  Vector3f operator+(const Vector3f& other) const;
+  Vector3f operator-(const Vector3f& other) const;
+  Vector3f operator*(float scalar) const;
+  Vector3f operator/(float scalar) const;
   bool operator==(const Vector3f& other) const;
   bool operator!=(const Vector3f& other) const;
+
+
+  void print() const;
 
   static Vector3f Zero;
   static Vector3f One;
@@ -35,6 +48,8 @@ public:
   static Vector3f Right;
   static Vector3f Forward;
   static Vector3f Back;
+
+  friend class Matrix4;
 };
 
 #endif

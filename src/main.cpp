@@ -1,10 +1,13 @@
-#include "application.hpp"
+#include "components/camera.hpp"
+#include "engine/application.hpp"
 #include "graphics/objects/ebo.hpp"
 #include "graphics/objects/vao.hpp"
 #include "graphics/objects/vbo.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture.hpp"
+#include "types/matrix4.hpp"
 #include "types/vector2i.hpp"
+#include "types/vector3f.hpp"
 #include <GL/glew.h>
 #include <iostream>
 
@@ -16,7 +19,8 @@ struct Vertex {
 int main() {
   Application app;
 
-  app.init("My Application", 800, 600, false);
+  app.init("My Application", 800, 600);
+  // app.init("My Fullscreen Application");
 
   Shader flatShader("resources/shaders/sprite-vert.glsl", "resources/shaders/sprite-frag.glsl");
   unsigned int vao;
@@ -48,18 +52,60 @@ int main() {
   flatShader.activate();
   int uColor = flatShader.getUniform("uColor");
   int uTexture = flatShader.getUniform("uTex");
+  int uModelMatrix = flatShader.getUniform("uModelMatrix");
+  int uCameraMatrix = flatShader.getUniform("uCameraMatrix");
+
+  Matrix4 mat4({
+    1.0f, 0.0f, 0.0f,  0.0f,
+    0.0f, 1.0f, 0.0f,  0.0f,
+    0.0f, 0.0f, 1.0f, -1.0f,
+    0.0f, 0.0f, 0.0f,  1.0f,
+  });
+
+  float windowSizeX = app.windowSize().getX();
+  float windowSizeY = app.windowSize().getY();
+
+  Camera camera;
+  camera.perspective(90.0f, windowSizeX/windowSizeY, 0.1f, 100.0f);
+  camera.move(Vector3f(0.0f,0.0f,-2.0f));
+
+  const Input& input = app.input();
+  float degrees = 20.0f;
 
   while (app.running()) {
+    app.clear();
     app.poll();
+    camera.update();
 
-    if (app.input().onKeyDown(KeyCode::ESCAPE)) {
+    if (input.onKeyDown(KeyCode::ESCAPE)) {
       app.quit();
+    }
+
+    if (input.onKey(KeyCode::S)) {
+      camera.move(Vector3f::Back);
+    }
+    if (input.onKey(KeyCode::W)) {
+      camera.move(Vector3f::Forward);
+    }
+    if (input.onKey(KeyCode::A)) {
+      camera.move(Vector3f::Left);
+    }
+    if (input.onKey(KeyCode::D)) {
+      camera.move(Vector3f::Right);
+    }
+    if (input.onKey(KeyCode::E)) {
+      camera.rotate(Vector3f(0.0f, 0.0f, degrees) * app.deltaTime());
+    }
+    if (input.onKey(KeyCode::Q)) {
+      camera.rotate(Vector3f(0.0f, 0.0f,-degrees) * app.deltaTime());
     }
 
     flatShader.activate();
     tex.bind(0);
-    flatShader.setUniform3f(uColor, color);
+    flatShader.setUniformVec3f(uColor, color);
     flatShader.setUniform1i(uTexture, 0);
+    flatShader.setUniformMat4(uModelMatrix, mat4);
+    flatShader.setUniformMat4(uCameraMatrix, camera.matrix());
     VAO::Bind(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
