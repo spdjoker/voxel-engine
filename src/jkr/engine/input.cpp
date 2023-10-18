@@ -1,6 +1,5 @@
 #include "input.hpp"
 #include "GLFW/glfw3.h"
-#include "types/vector2i.hpp"
 #include <iostream>
 
 constexpr char SET_PRESSED = 1;

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "input_enums.hpp"
-#include "types/vector2i.hpp"
+#include "jkr/types/vector2i.hpp"
 
 class Input {
   std::vector<char> states;

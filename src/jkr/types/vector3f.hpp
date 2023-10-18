@@ -1,5 +1,5 @@
-#ifndef JKR_VECTOR_3_FLOAT_HPP
-#define JKR_VECTOR_3_FLOAT_HPP
+#ifndef JKR_TYPES_VECTOR_3_FLOAT_HPP
+#define JKR_TYPES_VECTOR_3_FLOAT_HPP
 
 class Matrix4;
 

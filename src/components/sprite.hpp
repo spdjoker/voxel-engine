@@ -1,6 +1,0 @@
-#ifndef JKR_COMPONENT_SPRITE_HPP
-#define JKR_COMPONENT_SPRITE_HPP
-
-
-
-#endif // !JKR_SPRITE_HPP

@@ -1,5 +1,5 @@
-#include "graphics/objects/vao.hpp"
-#include "graphics/objects/vbo.hpp"
+#include "vao.hpp"
+#include "vbo.hpp"
 #include <GL/glew.h>
 
 namespace VAO {

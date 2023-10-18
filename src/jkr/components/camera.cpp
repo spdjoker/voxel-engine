@@ -34,7 +34,7 @@ void Camera::update() {
     } else if (recalculate & MODIFIED_POSITION) {
       recalculateViewMatrix();
     }
-    cameraMatrix = projectionMatrix * viewMatrix;
+    cameraMatrix = viewMatrix;
     recalculate = 0;
   }
 }
@@ -69,7 +69,7 @@ void Camera::recalculateViewMatrix() {
     0.0f, 0.0f, 1.0f, position.getZ(),
     0.0f, 0.0f, 0.0f, 1.0f
   });
-  viewMatrix = rotationMatrix * translationMatrix;
+  viewMatrix = translationMatrix * rotationMatrix;
 }
 
 void Camera::move(const Vector3f& displacement) {
@@ -82,11 +82,11 @@ void Camera::rotate(const Vector3f& degrees) {
   float y = orientation.getY() + radians(degrees.getY());
   float z = orientation.getZ() + radians(degrees.getZ());
 
-  while (z >= 1.0f) {
-    z -= 2.0f;
+  while (y >= 1.0f) {
+    y -= 2.0f;
   }
-  while (z <= -1.0f) {
-    z += 2.0f;
+  while (y <= -1.0f) {
+    y += 2.0f;
   }
 
   orientation.set(x,y,z);
@@ -97,4 +97,7 @@ void Camera::rotate(const Vector3f& degrees) {
 
 const Matrix4& Camera::matrix() const {
   return cameraMatrix;
+}
+const Matrix4& Camera::pmatrix() const {
+  return projectionMatrix;
 }

@@ -33,45 +33,40 @@ include_directories(${FMT_PATH}/include)
 set(SOURCES
   src/main.cpp
 
-  # SRC/ENGINE
-  src/components/sprite.hpp
-  src/components/camera.hpp
-  src/components/camera.cpp
+  # SRC/JKR/ENGINE
+  src/jkr/components/camera.hpp
+  src/jkr/components/camera.cpp
 
-  # SRC/ENGINE
-  src/engine/application.hpp
-  src/engine/application.cpp
-  src/engine/input_enums.hpp
-  src/engine/input.hpp
-  src/engine/input.cpp
+  # SRC/JKR/ENGINE
+  src/jkr/engine/application.hpp
+  src/jkr/engine/application.cpp
+  src/jkr/engine/input_enums.hpp
+  src/jkr/engine/input.hpp
+  src/jkr/engine/input.cpp
   
-  # SRC/GRAPHICS
-  src/graphics/shader.hpp
-  src/graphics/shader.cpp
-  src/graphics/texture.hpp
-  src/graphics/texture.cpp
-  src/graphics/objects/vao.hpp
-  src/graphics/objects/vao.cpp
-  src/graphics/objects/vbo.hpp
-  src/graphics/objects/vbo.cpp
-  src/graphics/objects/ebo.hpp
-  src/graphics/objects/ebo.cpp
+  # SRC/JKR/GRAPHICS
+  src/jkr/graphics/shader.hpp
+  src/jkr/graphics/shader.cpp
+  src/jkr/graphics/texture.hpp
+  src/jkr/graphics/texture.cpp
+  src/jkr/graphics/objects/vao.hpp
+  src/jkr/graphics/objects/vao.cpp
+  src/jkr/graphics/objects/vbo.hpp
+  src/jkr/graphics/objects/vbo.cpp
+  src/jkr/graphics/objects/ebo.hpp
+  src/jkr/graphics/objects/ebo.cpp
 
-  # SRC/TYPES
-  src/types/matrix4.hpp
-  src/types/matrix4.cpp
-  src/types/vector2i.hpp
-  src/types/vector2i.cpp
-  src/types/vector3f.hpp
-  src/types/vector3f.cpp
-  src/types/color3f.hpp
-  src/types/color3f.cpp
+  # SRC/JKR/TYPES
+  src/jkr/types/matrix4.hpp
+  src/jkr/types/matrix4.cpp
+  src/jkr/types/vector2i.hpp
+  src/jkr/types/vector2i.cpp
+  src/jkr/types/vector3f.hpp
+  src/jkr/types/vector3f.cpp
+  src/jkr/types/color3f.hpp
+  src/jkr/types/color3f.cpp
 
-  # SRC/UI
-  src/ui/image.hpp
-  src/ui/image.cpp
-
-  # SRC/UTIL
+  # SRC/JKR/UTIL
   src/util/stb_image.h
   )
 

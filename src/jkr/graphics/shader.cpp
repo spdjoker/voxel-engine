@@ -1,6 +1,4 @@
 #include "shader.hpp"
-#include "types/matrix4.hpp"
-#include "types/vector3f.hpp"
 #include <GL/glew.h>
 #include <cstring>
 #include <fstream>

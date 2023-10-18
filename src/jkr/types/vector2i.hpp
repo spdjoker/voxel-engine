@@ -1,5 +1,5 @@
-#ifndef JKR_VECTOR_2_INT_HPP
-#define JKR_VECTOR_2_INT_HPP
+#ifndef JKR_TYPES_VECTOR_2_INT_HPP
+#define JKR_TYPES_VECTOR_2_INT_HPP
 
 class Vector2i {
   int data[2];

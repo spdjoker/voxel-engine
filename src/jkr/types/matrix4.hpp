@@ -24,11 +24,43 @@ public:
   const float* ptr() const;
   
   float& operator[](int i);
+  float operator[](int i) const;
   Matrix4& operator=(const Matrix4& mat4);
   Matrix4& operator=(const float mat4[SIZE]);
   Matrix4 operator*(const Matrix4& mat4) const;
   Vector3f operator*(const Vector3f& vec3) const;
+  
+  // Matrix Transformations
+  void scale(const Vector3f& s);
+  void scaleX(float sx);
+  void scaleY(float sy);
+  void scaleZ(float sz);
 
+  void translate(const Vector3f& t);
+  void translateX(float tx);
+  void translateY(float ty);
+  void translateZ(float tz);
+  
+  void rotateX(float degrees);
+  void rotateY(float degrees);
+  void rotateZ(float degrees);
+
+  // Returned Transformations
+  Matrix4 scaled(const Vector3f& s) const;
+  Matrix4 scaledX(float sx) const;
+  Matrix4 scaledY(float sy) const;
+  Matrix4 scaledZ(float sz) const;
+
+  Matrix4 translated(const Vector3f& t) const;
+  Matrix4 translatedX(float tx) const;
+  Matrix4 translatedY(float ty) const;
+  Matrix4 translatedZ(float tz) const;
+  
+  Matrix4 rotatedX(float degrees) const;
+  Matrix4 rotatedY(float degrees) const;
+  Matrix4 rotatedZ(float degrees) const;
+
+  // Helper Methods
   void print() const;
   void printArray() const;
 

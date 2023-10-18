@@ -1,8 +1,8 @@
 #ifndef JKR_COMPONENTS_CAMERA_HPP
 #define JKR_COMPONENTS_CAMERA_HPP
 
-#include "types/vector3f.hpp"
-#include "types/matrix4.hpp"
+#include "jkr/types/vector3f.hpp"
+#include "jkr/types/matrix4.hpp"
 
 class Camera {
 public:
@@ -25,6 +25,7 @@ public:
   // void setRotation(const Vector3f& position);
 
   const Matrix4& matrix() const;
+  const Matrix4& pmatrix() const;
 
 private:
   Matrix4 projectionMatrix;

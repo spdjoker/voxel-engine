@@ -1,8 +1,8 @@
 #ifndef JKR_APPLICATION_HPP
 #define JKR_APPLICATION_HPP
 
-#include "engine/input.hpp"
-#include "types/vector2i.hpp"
+#include "jkr/engine/input.hpp"
+#include "jkr/types/vector2i.hpp"
 
 class GLFWwindow;
 

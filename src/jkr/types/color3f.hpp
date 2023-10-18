@@ -1,5 +1,5 @@
-#ifndef JKR_TYPE_COLOR_3_FLOAT_HPP
-#define JKR_TYPE_COLOR_3_FLOAT_HPP
+#ifndef JKR_TYPES_COLOR_3_FLOAT_HPP
+#define JKR_TYPES_COLOR_3_FLOAT_HPP
 
 class Color3f {
   float data[3];

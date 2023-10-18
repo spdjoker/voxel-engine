@@ -1,10 +1,10 @@
 #ifndef JKR_GRAPHICS_SHADER_PROGRAM_HPP
 #define JKR_GRAPHICS_SHADER_PROGRAM_HPP
 
-#include "graphics/texture.hpp"
-#include "types/matrix4.hpp"
-#include "types/vector3f.hpp"
-#include "types/color3f.hpp"
+#include "jkr/graphics/texture.hpp"
+#include "jkr/types/matrix4.hpp"
+#include "jkr/types/vector3f.hpp"
+#include "jkr/types/color3f.hpp"
 
 class Shader {
   unsigned int shaderID;
