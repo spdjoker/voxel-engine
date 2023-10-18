@@ -117,7 +117,9 @@ int main() {
     VAO::Bind(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    modelMatrix.rotateX(15.0f * app.deltaTime());
     modelMatrix.rotateY(30.0f * app.deltaTime());
+    modelMatrix.rotateZ(45.0f * app.deltaTime());
 
     app.render();
   }
