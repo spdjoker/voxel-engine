@@ -34,40 +34,43 @@ set(SOURCES
   src/main.cpp
 
   # SRC/JKR/ENGINE
-  src/jkr/components/camera.hpp
   src/jkr/components/camera.cpp
+  src/jkr/components/camera.hpp
+  src/jkr/components/transform.cpp
+  src/jkr/components/transform.hpp
 
   # SRC/JKR/ENGINE
-  src/jkr/engine/application.hpp
   src/jkr/engine/application.cpp
-  src/jkr/engine/input_enums.hpp
-  src/jkr/engine/input.hpp
+  src/jkr/engine/application.hpp
   src/jkr/engine/input.cpp
+  src/jkr/engine/input.hpp
+  src/jkr/engine/input_enums.hpp
   
   # SRC/JKR/GRAPHICS
-  src/jkr/graphics/shader.hpp
   src/jkr/graphics/shader.cpp
-  src/jkr/graphics/texture.hpp
+  src/jkr/graphics/shader.hpp
   src/jkr/graphics/texture.cpp
-  src/jkr/graphics/objects/vao.hpp
-  src/jkr/graphics/objects/vao.cpp
-  src/jkr/graphics/objects/vbo.hpp
-  src/jkr/graphics/objects/vbo.cpp
-  src/jkr/graphics/objects/ebo.hpp
+  src/jkr/graphics/texture.hpp
   src/jkr/graphics/objects/ebo.cpp
+  src/jkr/graphics/objects/ebo.hpp
+  src/jkr/graphics/objects/vao.cpp
+  src/jkr/graphics/objects/vao.hpp
+  src/jkr/graphics/objects/vbo.cpp
+  src/jkr/graphics/objects/vbo.hpp
 
   # SRC/JKR/TYPES
-  src/jkr/types/matrix4.hpp
-  src/jkr/types/matrix4.cpp
-  src/jkr/types/vector2i.hpp
-  src/jkr/types/vector2i.cpp
-  src/jkr/types/vector3f.hpp
-  src/jkr/types/vector3f.cpp
-  src/jkr/types/color3f.hpp
   src/jkr/types/color3f.cpp
+  src/jkr/types/color3f.hpp
+  src/jkr/types/matrix4.cpp
+  src/jkr/types/matrix4.hpp
+  src/jkr/types/vector2i.cpp
+  src/jkr/types/vector2i.hpp
+  src/jkr/types/vector3f.cpp
+  src/jkr/types/vector3f.hpp
 
   # SRC/JKR/UTIL
-  src/util/stb_image.h
+  src/jkr/util/event_flags.hpp
+  src/jkr/util/stb_image.h
   )
 
 # Preprocessor Definitions 

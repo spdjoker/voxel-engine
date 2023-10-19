@@ -1,4 +1,6 @@
+#include "fmt/core.h"
 #include "jkr/components/camera.hpp"
+#include "jkr/components/transform.hpp"
 #include "jkr/engine/application.hpp"
 #include "jkr/graphics/objects/ebo.hpp"
 #include "jkr/graphics/objects/vao.hpp"
@@ -8,6 +10,7 @@
 #include "jkr/types/matrix4.hpp"
 #include "jkr/types/vector2i.hpp"
 #include "jkr/types/vector3f.hpp"
+#include "jkr/util/event_flags.hpp"
 #include <GL/glew.h>
 #include <iostream>
 
@@ -56,70 +59,61 @@ int main() {
   int uTexture = flatShader.getUniform("uTex");
   int uModelMatrix = flatShader.getUniform("uModelMatrix");
   int uCameraMatrix = flatShader.getUniform("uCameraMatrix");
-  int uProjMatrix = flatShader.getUniform("uProjMatrix");
 
-  Matrix4 modelMatrix({
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f,
-  });
+  Transform transform({0.0f,0.0f,-1.0f}, Vector3f::Zero, Vector3f::One, Vector3f::Left * 0.5f);
 
   // Set up the camera
   Camera camera;
   camera.perspective(60.0f, ((float)app.windowSize().getX())/((float)app.windowSize().getY()), 0.1f, 100.0f);
-  camera.move(Vector3f(0.0f,0.0f,-2.0f));
+  camera.transform().setPosition({0.0f,0.0f,-2.0f});
 
-  Matrix4 mat(
-     0.0f,  1.0f,  2.0f,  3.0f,
-     4.0f,  5.0f,  6.0f,  7.0f,
-     8.0f,  9.0f, 10.0f, 11.0f,
-    12.0f, 13.0f, 14.0f, 15.0f
-  );
-  mat.print();
+  float degrees = 90.0f;
+  float speed = 10.0f;
 
-  float degrees = 20.0f;
+  camera.transform().lookAt(Vector3f::Forward);
 
   while (app.running()) {
     app.clear();
     app.poll();
+
     camera.update();
+    transform.update();
 
     if (app.input().onKeyDown(KeyCode::ESCAPE)) {
       app.quit();
     }
     if (app.input().onKey(KeyCode::S)) {
-      camera.move(Vector3f::Back);
+      camera.transform().translate(camera.transform().forward() * -speed * app.deltaTime());
     }
     if (app.input().onKey(KeyCode::W)) {
-      camera.move(Vector3f::Forward);
+      camera.transform().translate(camera.transform().forward() *  speed * app.deltaTime());
     }
     if (app.input().onKey(KeyCode::A)) {
-      camera.move(Vector3f::Left);
+      camera.transform().translate(camera.transform().right() * -speed * app.deltaTime());
     }
     if (app.input().onKey(KeyCode::D)) {
-      camera.move(Vector3f::Right);
+      camera.transform().translate(camera.transform().right() *  speed * app.deltaTime());
+    }
+    if (app.input().onKey(KeyCode::LEFT_SHIFT)) {
+      camera.transform().translate(Vector3f(0.0f,-speed,0.0f) * app.deltaTime());
+    }
+    if (app.input().onKey(KeyCode::SPACE)) {
+      camera.transform().translate(Vector3f(0.0f, speed,0.0f) * app.deltaTime());
     }
     if (app.input().onKey(KeyCode::E)) {
-      camera.rotate(Vector3f(0.0f, degrees, 0.0f) * app.deltaTime());
+      camera.transform().rotate(Vector3f(0.0f, degrees,0.0f) * app.deltaTime());
     }
     if (app.input().onKey(KeyCode::Q)) {
-      camera.rotate(Vector3f(0.0f, -degrees, 0.0f) * app.deltaTime());
+      camera.transform().rotate(Vector3f(0.0f,-degrees,0.0f) * app.deltaTime());
     }
 
     flatShader.activate();
     tex.bind(0);
-    // flatShader.setUniformVec3f(uColor, color);
     flatShader.setUniform1i(uTexture, 0);
-    flatShader.setUniformMat4(uModelMatrix, modelMatrix);
+    flatShader.setUniformMat4(uModelMatrix, transform.matrix());
     flatShader.setUniformMat4(uCameraMatrix, camera.matrix());
-    flatShader.setUniformMat4(uProjMatrix, camera.pmatrix());
     VAO::Bind(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    modelMatrix.rotateX(15.0f * app.deltaTime());
-    modelMatrix.rotateY(30.0f * app.deltaTime());
-    modelMatrix.rotateZ(45.0f * app.deltaTime());
 
     app.render();
   }

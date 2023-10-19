@@ -41,6 +41,7 @@ public:
   void translateY(float ty);
   void translateZ(float tz);
   
+  void rotate(const Vector3f& right, const Vector3f& up, const Vector3f& forward);
   void rotateX(float degrees);
   void rotateY(float degrees);
   void rotateZ(float degrees);
@@ -59,6 +60,11 @@ public:
   Matrix4 rotatedX(float degrees) const;
   Matrix4 rotatedY(float degrees) const;
   Matrix4 rotatedZ(float degrees) const;
+
+  Vector3f rowVector0() const;
+  Vector3f rowVector1() const;
+  Vector3f rowVector2() const;
+  Vector3f rowVector3() const;
 
   // Helper Methods
   void print() const;

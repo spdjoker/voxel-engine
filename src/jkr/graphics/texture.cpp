@@ -1,5 +1,5 @@
 #include "texture.hpp"
-#include "util/stb_image.h"
+#include "jkr/util/stb_image.h"
 #include <Gl/glew.h>
 #include <gl/GL.h>
 #include <iostream>

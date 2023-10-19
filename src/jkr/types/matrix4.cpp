@@ -1,13 +1,8 @@
 #include "matrix4.hpp"
 #include "vector3f.hpp"
+#include "jkr/util/math.hpp"
 #include <fmt/core.h>
 #include <stdexcept>
-#define _USE_MATH_DEFINES
-#include <cmath>
-
-constexpr float rads(float degrees) {
-  return degrees * M_PI / 180.0f;
-}
 
 Matrix4::Matrix4() :
   data{
@@ -126,39 +121,39 @@ Vector3f Matrix4::operator*(const Vector3f& t) const {
 }
 
 void Matrix4::scale(const Vector3f& s) {
-  data[ 0]*= s.data[0];
-  data[ 1]*= s.data[0];
-  data[ 2]*= s.data[0];
-  data[ 3]*= s.data[0];
-  data[ 4]*= s.data[1];
-  data[ 5]*= s.data[1];
-  data[ 6]*= s.data[1];
-  data[ 7]*= s.data[1];
-  data[ 8]*= s.data[2];
-  data[ 9]*= s.data[2];
-  data[10]*= s.data[2];
-  data[11]*= s.data[2];
+  data[ 0] *= s.data[0];
+  data[ 1] *= s.data[0];
+  data[ 2] *= s.data[0];
+  data[ 3] *= s.data[0];
+  data[ 4] *= s.data[1];
+  data[ 5] *= s.data[1];
+  data[ 6] *= s.data[1];
+  data[ 7] *= s.data[1];
+  data[ 8] *= s.data[2];
+  data[ 9] *= s.data[2];
+  data[10] *= s.data[2];
+  data[11] *= s.data[2];
 }
 
 void Matrix4::scaleX(float sx) {
-  data[ 0]*= sx;
-  data[ 1]*= sx;
-  data[ 2]*= sx;
-  data[ 3]*= sx;
+  data[ 0] *= sx;
+  data[ 1] *= sx;
+  data[ 2] *= sx;
+  data[ 3] *= sx;
 }
 
 void Matrix4::scaleY(float sy) {
-  data[ 4]*= sy;
-  data[ 5]*= sy;
-  data[ 6]*= sy;
-  data[ 7]*= sy;
+  data[ 4] *= sy;
+  data[ 5] *= sy;
+  data[ 6] *= sy;
+  data[ 7] *= sy;
 }
 
 void Matrix4::scaleZ(float sz) {
-  data[ 8]*= sz;
-  data[ 9]*= sz;
-  data[10]*= sz;
-  data[11]*= sz;
+  data[ 8] *= sz;
+  data[ 9] *= sz;
+  data[10] *= sz;
+  data[11] *= sz;
 }
 
 void Matrix4::translate(const Vector3f& t) {
@@ -189,8 +184,31 @@ void Matrix4::translateZ(float tz) {
   data[15] += data[11]*tz;
 }
 
+void Matrix4::rotate(const Vector3f& right, const Vector3f& up, const Vector3f& forward) {
+  float tmp1 = data[0];
+  float tmp2 = data[4];
+  data[ 0] = tmp1 * right.data[0] + tmp2 * up.data[0] + data[ 8] * forward.data[0];
+  data[ 4] = tmp1 * right.data[1] + tmp2 * up.data[1] + data[ 8] * forward.data[1];
+  data[ 8] = tmp1 * right.data[2] + tmp2 * up.data[2] + data[ 8] * forward.data[2];
+  tmp1 = data[1];
+  tmp2 = data[5];
+  data[ 1] = tmp1 * right.data[0] + tmp2 * up.data[0] + data[ 9] * forward.data[0];
+  data[ 5] = tmp1 * right.data[1] + tmp2 * up.data[1] + data[ 9] * forward.data[1];
+  data[ 9] = tmp1 * right.data[2] + tmp2 * up.data[2] + data[ 9] * forward.data[2];
+  tmp1 = data[2];
+  tmp2 = data[6];
+  data[ 2] = tmp1 * right.data[0] + tmp2 * up.data[0] + data[10] * forward.data[0];
+  data[ 6] = tmp1 * right.data[1] + tmp2 * up.data[1] + data[10] * forward.data[1];
+  data[10] = tmp1 * right.data[2] + tmp2 * up.data[2] + data[10] * forward.data[2];
+  tmp1 = data[3];
+  tmp2 = data[7];
+  data[ 3] = tmp1 * right.data[0] + tmp2 * up.data[0] + data[11] * forward.data[0];
+  data[ 7] = tmp1 * right.data[1] + tmp2 * up.data[1] + data[11] * forward.data[1];
+  data[11] = tmp1 * right.data[2] + tmp2 * up.data[2] + data[11] * forward.data[2];
+}
+
 void Matrix4::rotateX(float degrees) {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   float tmp = data[ 8];
@@ -208,7 +226,7 @@ void Matrix4::rotateX(float degrees) {
 }
 
 void Matrix4::rotateY(float degrees) {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   float tmp = data[0];
@@ -226,7 +244,7 @@ void Matrix4::rotateY(float degrees) {
 }
 
 void Matrix4::rotateZ(float degrees) {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   float tmp = data[4];
@@ -316,7 +334,7 @@ Matrix4 Matrix4::translatedZ(float tz) const {
 }
 
 Matrix4 Matrix4::rotatedX(float degrees) const {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   return Matrix4(
@@ -328,7 +346,7 @@ Matrix4 Matrix4::rotatedX(float degrees) const {
 }
 
 Matrix4 Matrix4::rotatedY(float degrees) const {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   return Matrix4(
@@ -340,7 +358,7 @@ Matrix4 Matrix4::rotatedY(float degrees) const {
 }
 
 Matrix4 Matrix4::rotatedZ(float degrees) const {
-  degrees = rads(degrees);
+  degrees = radians(degrees);
   float sind = sinf(degrees);
   float cosd = cosf(degrees);
   return Matrix4(
@@ -349,6 +367,20 @@ Matrix4 Matrix4::rotatedZ(float degrees) const {
     sind * data[6] + cosd * data[2], cosd * data[6] - sind * data[2], data[10], data[14],
     sind * data[7] + cosd * data[3], cosd * data[7] - sind * data[3], data[11], data[15]
   );
+}
+
+Vector3f Matrix4::rowVector0() const {
+  return Vector3f(data[0], data[4], data[8]);
+}
+
+Vector3f Matrix4::rowVector1() const {
+  return Vector3f(data[1], data[5], data[9]);
+}
+Vector3f Matrix4::rowVector2() const {
+  return Vector3f(data[2], data[6], data[10]);
+}
+Vector3f Matrix4::rowVector3() const {
+  return Vector3f(data[3], data[7], data[11]);
 }
 
 void Matrix4::print() const {

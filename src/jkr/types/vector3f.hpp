@@ -9,46 +9,52 @@ public:
   Vector3f();
   Vector3f(float x, float y, float z);
   Vector3f(const Vector3f& other);
-
-  float getX() const;
-  void setX(float value);
-
-  float getY() const;
-  void setY(float value);
   
+  // Accessors
+  float getX() const;
+  float getY() const;
   float getZ() const;
-  void setZ(float value);
+  const float* ptr() const;
 
+  // Mutators
   void set(float x, float y, float z);
-
+  void setX(float value);
+  void setY(float value);
+  void setZ(float value);
   void normalize();
 
+  // Calculations
   double magnitude() const;
   float sqrMagnitude() const;
-  const float* ptr() const;
-  
+  Vector3f normalized() const;
+  Vector3f cross(const Vector3f& other) const;
+
+  // Debuggig
+  void print() const;
+
+  // Operators
   Vector3f& operator=(const Vector3f& other);
   Vector3f& operator+=(const Vector3f& other);
   Vector3f& operator-=(const Vector3f& other);
   Vector3f operator+(const Vector3f& other) const;
   Vector3f operator-(const Vector3f& other) const;
+  Vector3f operator-() const;
   Vector3f operator*(float scalar) const;
   Vector3f operator/(float scalar) const;
   bool operator==(const Vector3f& other) const;
   bool operator!=(const Vector3f& other) const;
 
-
-  void print() const;
-
-  static Vector3f Zero;
-  static Vector3f One;
-  static Vector3f Up;
-  static Vector3f Down;
-  static Vector3f Left;
-  static Vector3f Right;
-  static Vector3f Forward;
-  static Vector3f Back;
-
+  // Static Instances
+  static const Vector3f Zero;
+  static const Vector3f One;
+  static const Vector3f Up;
+  static const Vector3f Down;
+  static const Vector3f Left;
+  static const Vector3f Right;
+  static const Vector3f Forward;
+  static const Vector3f Back;
+  
+  // Friends
   friend class Matrix4;
 };
 

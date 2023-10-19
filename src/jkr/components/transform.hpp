@@ -3,23 +3,54 @@
 
 #include "jkr/types/matrix4.hpp"
 #include "jkr/types/vector3f.hpp"
+#include "jkr/util/event_flags.hpp"
 
 class Transform {
-  Matrix4 modelMatrix;
-  Vector3f m_position;
-  Vector3f m_rotation;
-  Vector3f m_scale;
-
-  bool recalculate;
+  Matrix4 mat4_model;
+  Matrix4 mat4_rotation;
+  Vector3f vec3_position;
+  Vector3f vec3_rotation;
+  Vector3f vec3_scale;
+  Vector3f vec3_pivot;
+  EventFlags1b m_events;
 
 public:
-  Transform(const Vector3f& position, const Vector3f& rotation, const Vector3f& scale);
-
-  void move(const Vector3f& displacement);
+  Transform(
+    const Vector3f& position = Vector3f::Zero,
+    const Vector3f& rotation = Vector3f::Zero,
+    const Vector3f& scale = Vector3f::One,
+    const Vector3f& pivot = Vector3f::Zero
+  );
 
   void update();
 
+  void translate(const Vector3f& t);
+  void rotate(const Vector3f& r);
+  void lookAt(const Vector3f& point, const Vector3f& up = Vector3f::Up);
+
+  void setPosition(const Vector3f& position);
+  void setRotation(const Vector3f& rotation);
+  void setScale(const Vector3f& scale);
+  void setPivot(const Vector3f& scale);
+
+  void print() const;
+
+  const Vector3f& getPosition() const;
+  const Vector3f& getRotation() const;
+  const Vector3f& getScale() const;
+  const Vector3f& getPivot() const;
+  const Vector3f right() const;
+  const Vector3f up() const;
+  const Vector3f forward() const;
+
   const Matrix4& matrix() const;
+  const Matrix4& rotationMatrix() const;
+
+  bool onPositionChange() const;
+  bool onRotationChange() const;
+  bool onScaleChange() const;
+  bool onPivotChange() const;
+  bool onChange() const;
 };
 
 #endif

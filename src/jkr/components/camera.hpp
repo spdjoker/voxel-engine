@@ -1,44 +1,27 @@
 #ifndef JKR_COMPONENTS_CAMERA_HPP
 #define JKR_COMPONENTS_CAMERA_HPP
 
-#include "jkr/types/vector3f.hpp"
-#include "jkr/types/matrix4.hpp"
+#include "jkr/components/transform.hpp"
 
 class Camera {
-public:
-  enum class Projection {
-    PERSPECTIVE,
-    ORTHOGRAPHIC
-  };
+  Matrix4 mat4_projection;
+  Matrix4 mat4_view;
+  Matrix4 mat4_camera;
 
+  Transform m_transform;
+  EventFlags1b m_events;
+
+public:
   Camera();
   
-  // void orthographic(float left, float right, float bottom, float top, float near, float far);
-  // void perspective(float left, float right, float bottom, float top, float near, float far);
   void perspective(float FOV, float aspect, float near, float far);
   void update();
 
-  void move(const Vector3f& displacement);
-  void rotate(const Vector3f& degrees);
+  Transform& transform();
 
-  // void setPosition(const Vector3f& position);
-  // void setRotation(const Vector3f& position);
-
+  const Matrix4& projectionMatrix() const;
+  const Matrix4& viewMatrix() const;
   const Matrix4& matrix() const;
-  const Matrix4& pmatrix() const;
-
-private:
-  Matrix4 projectionMatrix;
-  Matrix4 rotationMatrix;
-  Matrix4 viewMatrix;
-  Matrix4 cameraMatrix;
-  char recalculate;
-
-  Vector3f position;
-  Vector3f orientation;
-
-  void recalculateRotationMatrix();
-  void recalculateViewMatrix();
 };
 
 #endif

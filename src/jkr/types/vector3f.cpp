@@ -53,6 +53,19 @@ float Vector3f::sqrMagnitude() const {
   return data[0] * data[0] + data[1] * data[1] + data[2] * data[2];
 }
 
+Vector3f Vector3f::normalized() const {
+  float mag = sqrt(data[0]*data[0] + data[1]*data[1] + data[2]*data[2]);
+  return Vector3f(data[0] / mag, data[1] / mag, data[2] / mag);
+}
+
+Vector3f Vector3f::cross(const Vector3f& other) const {
+  return Vector3f(
+    data[1] * other.data[2] - data[2] * other.data[1], 
+    data[2] * other.data[0] - data[0] * other.data[2], 
+    data[0] * other.data[1] - data[1] * other.data[0] 
+  );
+}
+
 const float* Vector3f::ptr() const {
   return data;
 }
@@ -86,6 +99,10 @@ Vector3f Vector3f::operator-(const Vector3f& other) const {
   return Vector3f(data[0]-other.data[0], data[1]-other.data[1], data[2]-other.data[2]);
 }
 
+Vector3f Vector3f::operator-() const {
+  return Vector3f(-data[0], -data[1], -data[2]);
+}
+
 Vector3f Vector3f::operator*(float scalar) const {
   return Vector3f(data[0]*scalar, data[1]*scalar, data[2]*scalar);
 }
@@ -107,11 +124,11 @@ void Vector3f::print() const {
   fmt::println("Vector3f: ({:f},{:f},{:f})",data[0],data[1],data[2]);
 }
 
-Vector3f Vector3f::Zero     = Vector3f( 0.0f, 0.0f, 0.0f);
-Vector3f Vector3f::One      = Vector3f( 1.0f, 1.0f, 1.0f);
-Vector3f Vector3f::Up       = Vector3f( 0.0f, 1.0f, 0.0f);
-Vector3f Vector3f::Down     = Vector3f( 0.0f,-1.0f, 0.0f);
-Vector3f Vector3f::Left     = Vector3f(-1.0f, 0.0f, 0.0f);
-Vector3f Vector3f::Right    = Vector3f( 1.0f, 0.0f, 0.0f);
-Vector3f Vector3f::Forward  = Vector3f( 0.0f, 0.0f, 1.0f);
-Vector3f Vector3f::Back     = Vector3f( 0.0f, 0.0f,-1.0f);
+const Vector3f Vector3f::Zero     = Vector3f( 0.0f, 0.0f, 0.0f);
+const Vector3f Vector3f::One      = Vector3f( 1.0f, 1.0f, 1.0f);
+const Vector3f Vector3f::Up       = Vector3f( 0.0f, 1.0f, 0.0f);
+const Vector3f Vector3f::Down     = Vector3f( 0.0f,-1.0f, 0.0f);
+const Vector3f Vector3f::Left     = Vector3f(-1.0f, 0.0f, 0.0f);
+const Vector3f Vector3f::Right    = Vector3f( 1.0f, 0.0f, 0.0f);
+const Vector3f Vector3f::Forward  = Vector3f( 0.0f, 0.0f, 1.0f);
+const Vector3f Vector3f::Back     = Vector3f( 0.0f, 0.0f,-1.0f);
