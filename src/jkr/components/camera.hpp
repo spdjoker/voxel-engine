@@ -22,6 +22,7 @@ public:
   const Matrix4& projectionMatrix() const;
   const Matrix4& viewMatrix() const;
   const Matrix4& matrix() const;
+
 };
 
 #endif

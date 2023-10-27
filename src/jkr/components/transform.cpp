@@ -18,9 +18,9 @@ void Transform::update() {
     // Model Matrix
     mat4_model = Matrix4::Identity;
     mat4_model.translate({
-        vec3_position.getX() + vec3_pivot.getX(),
-        vec3_position.getY() + vec3_pivot.getY(),
-        vec3_position.getZ() + vec3_pivot.getZ(),
+         vec3_position.getX() + vec3_pivot.getX(),
+         vec3_position.getY() + vec3_pivot.getY(),
+         vec3_position.getZ() + vec3_pivot.getZ(),
     });
     // TODO: replace vectors with Matrix3
     mat4_model.rotate(
@@ -29,7 +29,7 @@ void Transform::update() {
       mat4_rotation.rowVector2()   // Forward Vector
     );
     mat4_model.scale(vec3_scale);
-    mat4_model.translate({-vec3_pivot.getX(), -vec3_pivot.getY(), vec3_pivot.getZ()});
+    mat4_model.translate({-vec3_pivot.getX(), -vec3_pivot.getY(), -vec3_pivot.getZ()});
 
     m_events.processSignalFlags();
   } else if (m_events.hasEventFlags()) {
@@ -80,6 +80,12 @@ void Transform::setPosition(const Vector3f& position) {
 
 void Transform::setRotation(const Vector3f& rotation) {
   vec3_rotation = rotation;
+
+  mat4_rotation = Matrix4::Identity;
+  mat4_rotation.rotateZ(vec3_rotation.getZ());
+  mat4_rotation.rotateY(vec3_rotation.getY());
+  mat4_rotation.rotateX(vec3_rotation.getX());
+
   m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
 }
 

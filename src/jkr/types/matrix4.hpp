@@ -57,6 +57,7 @@ public:
   Matrix4 translatedY(float ty) const;
   Matrix4 translatedZ(float tz) const;
   
+  Matrix4 rotated(const Vector3f& right, const Vector3f& up, const Vector3f& forward) const;
   Matrix4 rotatedX(float degrees) const;
   Matrix4 rotatedY(float degrees) const;
   Matrix4 rotatedZ(float degrees) const;

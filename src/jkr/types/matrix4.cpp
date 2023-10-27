@@ -333,6 +333,27 @@ Matrix4 Matrix4::translatedZ(float tz) const {
   );
 }
 
+Matrix4 Matrix4::rotated(const Vector3f& right, const Vector3f& up, const Vector3f& forward) const {
+  return Matrix4(
+    data[ 0] * right.data[0] + data[ 4] * up.data[0] + data[ 8] * forward.data[0],
+    data[ 0] * right.data[1] + data[ 4] * up.data[1] + data[ 8] * forward.data[1],
+    data[ 0] * right.data[2] + data[ 4] * up.data[2] + data[ 8] * forward.data[2],
+    data[12],
+    data[ 1] * right.data[0] + data[ 5] * up.data[0] + data[ 9] * forward.data[0],
+    data[ 1] * right.data[1] + data[ 5] * up.data[1] + data[ 9] * forward.data[1],
+    data[ 1] * right.data[2] + data[ 5] * up.data[2] + data[ 9] * forward.data[2],
+    data[13],
+    data[ 2] * right.data[0] + data[ 6] * up.data[0] + data[10] * forward.data[0],
+    data[ 2] * right.data[1] + data[ 6] * up.data[1] + data[10] * forward.data[1],
+    data[ 2] * right.data[2] + data[ 6] * up.data[2] + data[10] * forward.data[2],
+    data[14],
+    data[ 3] * right.data[0] + data[ 7] * up.data[0] + data[11] * forward.data[0],
+    data[ 3] * right.data[1] + data[ 7] * up.data[1] + data[11] * forward.data[1],
+    data[ 3] * right.data[2] + data[ 7] * up.data[2] + data[11] * forward.data[2],
+    data[15]
+  );
+}
+
 Matrix4 Matrix4::rotatedX(float degrees) const {
   degrees = radians(degrees);
   float sind = sinf(degrees);

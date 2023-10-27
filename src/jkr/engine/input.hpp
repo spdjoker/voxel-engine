@@ -3,14 +3,14 @@
 
 #include <vector>
 #include "input_enums.hpp"
-#include "jkr/types/vector2i.hpp"
+#include "jkr/types/vector2.hpp"
 
 class Input {
   std::vector<char> states;
   KeyCode last;
 
-  Vector2i mousePosition;
-  Vector2i mouseDelta;
+  Vector2f mousePosition;
+  Vector2f mouseDelta;
 
 public:
   Input();
@@ -30,7 +30,7 @@ public:
   // Mouse Update Methods
   void setMouseButtonPressed(int key);
   void setMouseButtonReleased(int key);
-  void setMousePosition(int xpos, int ypos);
+  void setMousePosition(float xpos, float ypos);
 
   // Mouse Related Events
   bool onMouseButton(MouseButton key) const;
@@ -39,8 +39,8 @@ public:
   bool onMouseMove() const;
   
   // Getters
-  Vector2i getMousePosition() const;
-  Vector2i getMouseDelta() const;
+  Vector2f getMousePosition() const;
+  Vector2f getMouseDelta() const;
 };
 
 #endif

@@ -20,35 +20,18 @@ void Camera::perspective(float FOV, float aspect, float near, float far) {
   };
   m_events.setSignalFlags(FLAG_MODIFIED_PROJECTION_MATRIX);
 }
-Matrix4 makeViewMatrix(const Transform& transform) {
-  Matrix4 mat4_model;
-  Vector3f vec3_position = transform.getPosition();
-  Vector3f vec3_pivot = transform.getPivot();
-  // mat4_model.translate({
-  //   (vec3_position.getX() + vec3_pivot.getX()),
-  //   (vec3_position.getY() + vec3_pivot.getY()),
-  //    -vec3_position.getZ() - vec3_pivot.getZ()
-  //  });
-  mat4_model.rotate(
-     transform.right(),
-     transform.up(),
-    -transform.forward()
-  );
-  mat4_model.scale(transform.getScale());
-  mat4_model.translate(
-    Vector3f(
-    -(vec3_position.getX() + vec3_pivot.getX()),
-    -(vec3_position.getY() + vec3_pivot.getY()),
-      vec3_position.getZ() + vec3_pivot.getZ()
-   ));
-  return mat4_model;
-}
+
 void Camera::update() {
   m_transform.update();
 
   if (m_events.hasSignalFlags() || m_transform.onChange()) {
-    mat4_view = Matrix4::Identity;
-    mat4_camera = mat4_projection * makeViewMatrix(m_transform);
+    // Invert the forward vector of the rotation matrix.
+    mat4_view = Matrix4::Identity.translated(-m_transform.getPivot());
+    mat4_view.rotate(m_transform.right(), m_transform.up(), -m_transform.forward());
+    mat4_view.scale(m_transform.getScale());
+    mat4_view.translate(-m_transform.getPosition() - m_transform.getPivot());
+    
+    mat4_camera = mat4_projection * mat4_view;
     m_events.processSignalFlags();
   } else if (m_events.hasEventFlags()) {
     m_events.clearEventFlags();

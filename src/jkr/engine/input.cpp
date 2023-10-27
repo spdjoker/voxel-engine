@@ -38,7 +38,7 @@ void Input::setMouseButtonReleased(int button) {
   states[button] = states[button] & SET_RELEASED;
 }
 
-void Input::setMousePosition(int xpos, int ypos) {
+void Input::setMousePosition(float xpos, float ypos) {
   mouseDelta.set(xpos - mousePosition.getX(), ypos - mousePosition.getY());
   mousePosition.set(xpos, ypos);
 }
@@ -75,10 +75,10 @@ bool Input::onMouseMove() const {
   return mouseDelta.getX() != 0 || mouseDelta.getY() != 0;
 }
 
-Vector2i Input::getMousePosition() const {
+Vector2f Input::getMousePosition() const {
   return mousePosition;
 }
 
-Vector2i Input::getMouseDelta() const {
+Vector2f Input::getMouseDelta() const {
   return mouseDelta;
 }

@@ -32,7 +32,7 @@ void Application::mousePositionCallback(GLFWwindow* window, double xpos, double 
   ((Application*)glfwGetWindowUserPointer(window))->m_input.setMousePosition(xpos, ypos);
 }
 
-Application::Application() : isRunning(false), window(nullptr), m_input(), m_windowSize() {}
+Application::Application() : window(nullptr), m_input(), isRunning(false), m_windowSize() {}
 Application::~Application() {}
 
 int Application::initGLFW() {
@@ -74,6 +74,9 @@ int Application::configure(int width, int height) {
   m_windowSize = {width, height};
   isRunning = true;
   lastFrameTime = glfwGetTime();
+
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
 
   return 0;
 }

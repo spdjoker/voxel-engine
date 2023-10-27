@@ -63,8 +63,13 @@ set(SOURCES
   src/jkr/types/color3f.hpp
   src/jkr/types/matrix4.cpp
   src/jkr/types/matrix4.hpp
-  src/jkr/types/vector2i.cpp
-  src/jkr/types/vector2i.hpp
+  src/jkr/types/quaternion.cpp
+  src/jkr/types/quaternion.hpp
+  src/jkr/types/vector2/vector2f.cpp
+  src/jkr/types/vector2/vector2f.hpp
+  src/jkr/types/vector2/vector2i.cpp
+  src/jkr/types/vector2/vector2i.hpp
+  src/jkr/types/vector2.hpp
   src/jkr/types/vector3f.cpp
   src/jkr/types/vector3f.hpp
 
