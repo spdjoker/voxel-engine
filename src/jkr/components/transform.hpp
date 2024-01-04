@@ -2,12 +2,13 @@
 #define JKR_COMPONENTS_TRANSFORM_HPP
 
 #include "jkr/types/matrix4.hpp"
+#include "jkr/types/quaternion.hpp"
 #include "jkr/types/vector3f.hpp"
 #include "jkr/util/event_flags.hpp"
 
 class Transform {
   Matrix4 mat4_model;
-  Matrix4 mat4_rotation;
+  Quaternion quat_rotation;
   Vector3f vec3_position;
   Vector3f vec3_rotation;
   Vector3f vec3_scale;
@@ -17,7 +18,7 @@ class Transform {
 public:
   Transform(
     const Vector3f& position = Vector3f::Zero,
-    const Vector3f& rotation = Vector3f::Zero,
+    const Quaternion& quaternion = Quaternion::Identity,
     const Vector3f& scale = Vector3f::One,
     const Vector3f& pivot = Vector3f::Zero
   );
@@ -25,8 +26,7 @@ public:
   void update();
 
   void translate(const Vector3f& t);
-  void rotate(const Vector3f& r);
-  void lookAt(const Vector3f& point, const Vector3f& up = Vector3f::Up);
+  void rotate(const Vector3f& degrees);
 
   void setPosition(const Vector3f& position);
   void setRotation(const Vector3f& rotation);
@@ -44,7 +44,7 @@ public:
   const Vector3f forward() const;
 
   const Matrix4& matrix() const;
-  const Matrix4& rotationMatrix() const;
+  const Quaternion& quaternion() const;
 
   bool onPositionChange() const;
   bool onRotationChange() const;

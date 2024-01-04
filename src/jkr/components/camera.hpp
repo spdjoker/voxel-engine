@@ -2,6 +2,7 @@
 #define JKR_COMPONENTS_CAMERA_HPP
 
 #include "jkr/components/transform.hpp"
+#include "jkr/types/vector3f.hpp"
 
 class Camera {
   Matrix4 mat4_projection;

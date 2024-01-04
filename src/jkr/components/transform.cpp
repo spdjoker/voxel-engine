@@ -1,5 +1,7 @@
 #include "transform.hpp"
 #include "fmt/core.h"
+#include "jkr/types/quaternion.hpp"
+#include "jkr/types/vector3f.hpp"
 #include "jkr/util/math.hpp"
 
 constexpr unsigned char FLAG_MODIFIED_POSITION = 1;
@@ -7,8 +9,8 @@ constexpr unsigned char FLAG_MODIFIED_ROTATION = 2;
 constexpr unsigned char FLAG_MODIFIED_SCALE = 4;
 constexpr unsigned char FLAG_MODIFIED_PIVOT = 8;
 
-Transform::Transform(const Vector3f& pos, const Vector3f& rot, const Vector3f& scale, const Vector3f& pivot) : 
-  mat4_model(), mat4_rotation(), vec3_position(pos), vec3_rotation(rot), vec3_scale(scale), vec3_pivot(pivot),
+Transform::Transform(const Vector3f& pos, const Quaternion& quaternion, const Vector3f& scale, const Vector3f& pivot) : 
+  mat4_model(), quat_rotation(quaternion), vec3_position(pos), vec3_rotation(), vec3_scale(scale), vec3_pivot(pivot),
   m_events(FLAG_MODIFIED_POSITION | FLAG_MODIFIED_ROTATION | FLAG_MODIFIED_SCALE | FLAG_MODIFIED_PIVOT) {
   update();
 }
@@ -23,11 +25,7 @@ void Transform::update() {
          vec3_position.getZ() + vec3_pivot.getZ(),
     });
     // TODO: replace vectors with Matrix3
-    mat4_model.rotate(
-      mat4_rotation.rowVector0(),  // Right Vector
-      mat4_rotation.rowVector1(),  // Up Vector
-      mat4_rotation.rowVector2()   // Forward Vector
-    );
+    mat4_model = mat4_model * quat_rotation.matrix();
     mat4_model.scale(vec3_scale);
     mat4_model.translate({-vec3_pivot.getX(), -vec3_pivot.getY(), -vec3_pivot.getZ()});
 
@@ -44,32 +42,7 @@ void Transform::translate(const Vector3f& t) {
 
 void Transform::rotate(const Vector3f& r) {
   vec3_rotation += r;
-
-  mat4_rotation = Matrix4::Identity;
-  mat4_rotation.rotateZ(vec3_rotation.getZ());
-  mat4_rotation.rotateY(vec3_rotation.getY());
-  mat4_rotation.rotateX(vec3_rotation.getX());
-
-  m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
-}
-
-void Transform::lookAt(const Vector3f& target, const Vector3f& worldUp) {
-  Vector3f tmp1 = (target - vec3_position).normalized();
-  mat4_rotation[ 2] = tmp1.getX();
-  mat4_rotation[ 6] = tmp1.getY();
-  mat4_rotation[10] = tmp1.getZ();
-  vec3_rotation.setX(degrees(std::asin(-tmp1.getY())));
-  vec3_rotation.setY(degrees(std::atan2(tmp1.getX(), tmp1.getZ())));
-  Vector3f tmp2 = worldUp.cross(tmp1).normalized(); // Right
-  mat4_rotation[ 0] = tmp2.getX();
-  mat4_rotation[ 4] = tmp2.getY();
-  mat4_rotation[ 8] = tmp2.getZ();
-  vec3_rotation.setZ(degrees(std::atan2(-tmp2.getY(), tmp2.getX())));
-  tmp1 = tmp1.cross(tmp2); // Up
-  mat4_rotation[ 1] = tmp1.getX();
-  mat4_rotation[ 5] = tmp1.getY();
-  mat4_rotation[ 9] = tmp1.getZ();
-
+  quat_rotation = Quaternion::fromEuler(vec3_rotation);
   m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
 }
 
@@ -80,12 +53,7 @@ void Transform::setPosition(const Vector3f& position) {
 
 void Transform::setRotation(const Vector3f& rotation) {
   vec3_rotation = rotation;
-
-  mat4_rotation = Matrix4::Identity;
-  mat4_rotation.rotateZ(vec3_rotation.getZ());
-  mat4_rotation.rotateY(vec3_rotation.getY());
-  mat4_rotation.rotateX(vec3_rotation.getX());
-
+  quat_rotation = Quaternion::fromEuler(vec3_rotation);
   m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
 }
 
@@ -125,23 +93,23 @@ const Vector3f& Transform::getPivot() const {
 }
 
 const Vector3f Transform::right() const {
-  return mat4_rotation.rowVector0();
+  return quat_rotation.matrix().rowVector0();
 }
 
 const Vector3f Transform::up() const {
-  return mat4_rotation.rowVector1();
+  return quat_rotation.matrix().rowVector1();
 }
 
 const Vector3f Transform::forward() const {
-  return mat4_rotation.rowVector2();
+  return quat_rotation.matrix().rowVector2();
 }
 
 const Matrix4& Transform::matrix() const {
   return mat4_model;
 }
 
-const Matrix4& Transform::rotationMatrix() const {
-  return mat4_rotation;
+const Quaternion& Transform::quaternion() const {
+  return quat_rotation;
 }
 
 bool Transform::onPositionChange() const {

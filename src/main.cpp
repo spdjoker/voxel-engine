@@ -77,7 +77,7 @@ int main() {
   int uModelMatrix = flatShader.getUniform("uModelMatrix");
   int uCameraMatrix = flatShader.getUniform("uCameraMatrix");
 
-  Transform transform({0.0f,0.0f,0.0f}, Vector3f::Zero, Vector3f::One * 50.0f);
+  Transform transform({0.0f,0.0f,0.0f}, Quaternion::Identity, Vector3f::One * 50);
   Texture tex("resources/images/gridbox.jpg");
 
   // Set up the camera
@@ -87,10 +87,6 @@ int main() {
 
   const float sensitivity = 0.2f;
   const float speed = 10.0f;
-
-  camera.transform().lookAt(camera.transform().getPosition() + Vector3f::Forward);
-  Quaternion quat({45.0,45.0,45.0});
-  quat.print();
 
   while (app.running()) {
     app.clear();
@@ -107,6 +103,7 @@ int main() {
     }
     if (app.input().onKey(KeyCode::W)) {
       camera.transform().translate(camera.transform().forward() *  speed * app.deltaTime());
+      camera.transform().getPosition().print();
     }
     if (app.input().onKey(KeyCode::A)) {
       camera.transform().translate(camera.transform().right() * -speed * app.deltaTime());
@@ -125,14 +122,8 @@ int main() {
       Vector3f rotation = camera.transform().getRotation() + Vector3f(delta.getY(), delta.getX(), 0.0f);
       if (rotation.getX() > 89.0f) rotation.setX(89.0f);
       else if (rotation.getX() < -89.0f) rotation.setX(-89.0f);
-      rotation.setZ(0.0f);
       camera.transform().setRotation(rotation);
-      // app.input().getMouseDelta().print();
     }
-
-    // transform.rotate(Vector3f(30.0f * app.deltaTime(), 0.0f, 0.0f));
-    // transform.rotate(Vector3f(0.0f, 30.0f * app.deltaTime(), 0.0f));
-    // transform.rotate(Vector3f(0.0f, 0.0f, 30.0f * app.deltaTime()));
 
     flatShader.activate();
     tex.bind(0);
