@@ -2,15 +2,15 @@
 #define JKR_INPUT_HPP
 
 #include <vector>
+#include "jkr/types/common.hpp"
 #include "input_enums.hpp"
-#include "jkr/types/vector2.hpp"
 
 class Input {
   std::vector<char> states;
   KeyCode last;
 
-  Vector2f mousePosition;
-  Vector2f mouseDelta;
+  ivec2 mousePosition;
+  vec2 mouseDelta;
 
 public:
   Input();
@@ -39,8 +39,8 @@ public:
   bool onMouseMove() const;
   
   // Getters
-  Vector2f getMousePosition() const;
-  Vector2f getMouseDelta() const;
+  vec2 getMousePosition() const;
+  vec2 getMouseDelta() const;
 };
 
 #endif

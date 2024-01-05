@@ -2,9 +2,7 @@
 #define JKR_GRAPHICS_SHADER_PROGRAM_HPP
 
 #include "jkr/graphics/texture.hpp"
-#include "jkr/types/matrix4.hpp"
-#include "jkr/types/vector3f.hpp"
-#include "jkr/types/color3f.hpp"
+#include <jkr/types/common.hpp>
 
 class Shader {
   unsigned int shaderID;
@@ -16,10 +14,9 @@ public:
   void activate();
   
   int getUniform(const char* name);
-  void setUniformMat4(int uniform, const Matrix4& mat4);
-  void setUniformVec3f(int uniform, const Vector3f* vec3, int count);
-  void setUniformVec3f(int uniform, const Vector3f& vec3);
-  void setUniformVec3f(int uniform, const Color3f& vec3);
+  void setUniformMat4(int uniform, const mat4& mat4);
+  void setUniformVec3f(int uniform, const vec3* vec3, int count);
+  void setUniformVec3f(int uniform, const vec3& vec3);
   void setUniform1i(int uniform, int unit);
 };
 

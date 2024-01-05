@@ -145,7 +145,7 @@ void Application::quit() {
   glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-const Vector2i& Application::windowSize() const { return m_windowSize; }
+const ivec2& Application::windowSize() const { return m_windowSize; }
 const Input& Application::input() const { return m_input; }
 
 float Application::deltaTime() const { return m_deltaTime; }
