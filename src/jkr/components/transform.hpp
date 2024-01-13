@@ -1,50 +1,54 @@
 #ifndef JKR_COMPONENTS_TRANSFORM_HPP
 #define JKR_COMPONENTS_TRANSFORM_HPP
 
-#include "jkr/types/matrix4.hpp"
-#include "jkr/types/quaternion.hpp"
-#include "jkr/types/vector3f.hpp"
-#include "jkr/util/event_flags.hpp"
+#include "jkr/types/common.hpp"
 
 class Transform {
-  Matrix4 mat4_model;
-  Quaternion quat_rotation;
-  Vector3f vec3_position;
-  Vector3f vec3_rotation;
-  Vector3f vec3_scale;
-  Vector3f vec3_pivot;
-  EventFlags1b m_events;
+  mat4 mat4_model;
+  quat quat_rotation;
+  vec3 vec3_position;
+  vec3 vec3_rotation;
+  vec3 vec3_scale;
+  vec3 vec3_pivot;
+  flag8 flags;
 
 public:
   Transform(
-    const Vector3f& position = Vector3f::Zero,
-    const Quaternion& quaternion = Quaternion::Identity,
-    const Vector3f& scale = Vector3f::One,
-    const Vector3f& pivot = Vector3f::Zero
+    const vec3& position = VEC3_ZERO,
+    const vec3& rotation = VEC3_ZERO,
+    const vec3& scale = VEC3_ONE,
+    const vec3& pivot = VEC3_ZERO
+  );
+  Transform(
+    const vec3& position,
+    const quat& rotation,
+    const vec3& scale = VEC3_ONE,
+    const vec3& pivot = VEC3_ZERO
   );
 
   void update();
 
-  void translate(const Vector3f& t);
-  void rotate(const Vector3f& degrees);
+  void translate(const vec3& translation);
+  void rotate(const vec3& rot_degrees);
 
-  void setPosition(const Vector3f& position);
-  void setRotation(const Vector3f& rotation);
-  void setScale(const Vector3f& scale);
-  void setPivot(const Vector3f& scale);
+  void setPosition(const vec3& position);
+  void setRotation(const vec3& rot_degrees);
+  void setRotation(const quat& rotation);
+  void setScale(const vec3& scale);
+  void setPivot(const vec3& pivot);
 
   void print() const;
 
-  const Vector3f& getPosition() const;
-  const Vector3f& getRotation() const;
-  const Vector3f& getScale() const;
-  const Vector3f& getPivot() const;
-  const Vector3f right() const;
-  const Vector3f up() const;
-  const Vector3f forward() const;
+  const vec3& getPosition() const;
+  const vec3& getRotation() const;
+  const vec3& getScale() const;
+  const vec3& getPivot() const;
+  const vec3 right() const;
+  const vec3 up() const;
+  const vec3 forward() const;
 
-  const Matrix4& matrix() const;
-  const Quaternion& quaternion() const;
+  const mat4& matrix() const;
+  const quat& quaternion() const;
 
   bool onPositionChange() const;
   bool onRotationChange() const;

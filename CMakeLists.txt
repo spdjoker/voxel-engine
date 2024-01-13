@@ -16,15 +16,15 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
 set(GLFW_PATH ${EXTERNAL_PATH}/glfw-3.3.8)
 set(GLFW_LIBRARIES ${GLFW_PATH}/lib/x64/libglfw3.a)
-include_directories(${GLFW_PATH}/include)
+# include_directories(${GLFW_PATH}/include)
 
 set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
 set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
-include_directories(${GLEW_PATH}/include)
+# include_directories(${GLEW_PATH}/include)
 
 set(FMT_PATH ${EXTERNAL_PATH}/fmt-10.1.0)
 set(FMT_LIBRARIES ${FMT_PATH}/build/libfmt.a)
-include_directories(${FMT_PATH}/include)
+# include_directories(${FMT_PATH}/include)
 
 # file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 
@@ -32,10 +32,10 @@ set(SOURCES
   src/main.cpp
 
   # SRC/JKR/ENGINE
-  # src/jkr/components/camera.cpp
-  # src/jkr/components/camera.hpp
-  # src/jkr/components/transform.cpp
-  # src/jkr/components/transform.hpp
+  src/jkr/components/camera.cpp
+  src/jkr/components/camera.hpp
+  src/jkr/components/transform.cpp
+  src/jkr/components/transform.hpp
 
   # SRC/JKR/ENGINE
   src/jkr/engine/application.cpp
@@ -58,9 +58,9 @@ set(SOURCES
 
   # SRC/JKR/TYPES
   src/jkr/types/common.hpp
+  src/jkr/types/flag.hpp
 
   # SRC/JKR/UTIL
-  src/jkr/util/event_flags.hpp
   src/jkr/util/stb_image.h
   )
 
@@ -71,9 +71,16 @@ add_definitions(-DSTB_IMAGE_IMPLEMENTATION)
 add_executable(${BUILD_NAME} ${SOURCES})
 
 # Add the paths to the dependency libraries
-target_link_libraries(${BUILD_NAME} PRIVATE ${GLEW_LIBRARIES})
-target_link_libraries(${BUILD_NAME} PRIVATE ${OPENGL_LIBRARIES})
-target_link_libraries(${BUILD_NAME} PRIVATE ${GLFW_LIBRARIES})
-target_link_libraries(${BUILD_NAME} PRIVATE ${FMT_LIBRARIES})
-target_include_directories(${BUILD_NAME} PUBLIC ${EXTERNAL_PATH}/glm-master)
+target_link_libraries(${BUILD_NAME} PRIVATE 
+  ${GLEW_LIBRARIES}
+  ${OPENGL_LIBRARIES}
+  ${GLFW_LIBRARIES}
+  ${FMT_LIBRARIES}
+  )
+target_include_directories(${BUILD_NAME} PRIVATE 
+  ${GLFW_PATH}/include
+  ${GLEW_PATH}/include
+  ${FMT_PATH}/include
+  ${EXTERNAL_PATH}/glm-master
+  )
 target_compile_definitions(${BUILD_NAME} PRIVATE GLEW_STATIC)

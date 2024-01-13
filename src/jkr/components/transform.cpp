@@ -1,133 +1,138 @@
 #include "transform.hpp"
-#include "fmt/core.h"
-#include "jkr/types/quaternion.hpp"
-#include "jkr/types/vector3f.hpp"
-#include "jkr/util/math.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "jkr/types/common.hpp"
+#include <fmt/core.h>
 
-constexpr unsigned char FLAG_MODIFIED_POSITION = 1;
-constexpr unsigned char FLAG_MODIFIED_ROTATION = 2;
-constexpr unsigned char FLAG_MODIFIED_SCALE = 4;
-constexpr unsigned char FLAG_MODIFIED_PIVOT = 8;
+enum FLAGS {
+  MODIFIED_POSITION = 1,
+  MODIFIED_ROTATION = 2,
+  MODIFIED_SCALE = 4,
+  MODIFIED_PIVOT = 8
+};
 
-Transform::Transform(const Vector3f& pos, const Quaternion& quaternion, const Vector3f& scale, const Vector3f& pivot) : 
-  mat4_model(), quat_rotation(quaternion), vec3_position(pos), vec3_rotation(), vec3_scale(scale), vec3_pivot(pivot),
-  m_events(FLAG_MODIFIED_POSITION | FLAG_MODIFIED_ROTATION | FLAG_MODIFIED_SCALE | FLAG_MODIFIED_PIVOT) {
+Transform::Transform(const vec3& pos, const vec3& rotation, const vec3& scale, const vec3& pivot) : 
+  mat4_model(), quat_rotation(glm::radians(rotation)), vec3_position(pos), vec3_rotation(rotation), vec3_scale(scale), vec3_pivot(pivot),
+  flags(MODIFIED_POSITION | MODIFIED_ROTATION | MODIFIED_SCALE | MODIFIED_PIVOT) {
+  update();
+}
+
+Transform::Transform(const vec3& pos, const quat& rotation, const vec3& scale, const vec3& pivot) : 
+  mat4_model(), quat_rotation(rotation), vec3_position(pos), vec3_rotation(glm::degrees(glm::eulerAngles(rotation))), vec3_scale(scale), vec3_pivot(pivot),
+  flags(MODIFIED_POSITION | MODIFIED_ROTATION | MODIFIED_SCALE | MODIFIED_PIVOT) {
   update();
 }
 
 void Transform::update() {
-  if (m_events.hasSignalFlags()) {
-    // Model Matrix
-    mat4_model = Matrix4::Identity;
-    mat4_model.translate({
-         vec3_position.getX() + vec3_pivot.getX(),
-         vec3_position.getY() + vec3_pivot.getY(),
-         vec3_position.getZ() + vec3_pivot.getZ(),
-    });
-    // TODO: replace vectors with Matrix3
-    mat4_model = mat4_model * quat_rotation.matrix();
-    mat4_model.scale(vec3_scale);
-    mat4_model.translate({-vec3_pivot.getX(), -vec3_pivot.getY(), -vec3_pivot.getZ()});
+  if (flags.hasSignalFlags()) {
+    mat4_model = glm::translate(MAT4_IDENTITY, vec3_position + vec3_pivot) * glm::mat4_cast(quat_rotation);
+    mat4_model = glm::scale(mat4_model, vec3_scale);
+    mat4_model = glm::translate(mat4_model, -vec3_pivot);
 
-    m_events.processSignalFlags();
-  } else if (m_events.hasEventFlags()) {
-    m_events.clearEventFlags();
+    flags.processSignalFlags();
+  } else if (flags.hasEventFlags()) {
+    flags.clearEventFlags();
   }
 }
 
-void Transform::translate(const Vector3f& t) {
-  vec3_position += t;
-  m_events.setSignalFlags(FLAG_MODIFIED_POSITION);
+void Transform::translate(const vec3& translation) {
+  vec3_position += translation;
+  flags.setSignalFlags(MODIFIED_POSITION);
 }
 
-void Transform::rotate(const Vector3f& r) {
-  vec3_rotation += r;
-  quat_rotation = Quaternion::fromEuler(vec3_rotation);
-  m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
+void Transform::rotate(const vec3& rot_degrees) {
+  vec3_rotation += rot_degrees;
+  quat_rotation = quat(glm::radians(vec3_rotation));
+  flags.setSignalFlags(MODIFIED_ROTATION);
 }
 
-void Transform::setPosition(const Vector3f& position) {
+void Transform::setPosition(const vec3& position) {
   vec3_position = position;
-  m_events.setSignalFlags(FLAG_MODIFIED_POSITION);
+  flags.setSignalFlags(MODIFIED_POSITION);
 }
 
-void Transform::setRotation(const Vector3f& rotation) {
-  vec3_rotation = rotation;
-  quat_rotation = Quaternion::fromEuler(vec3_rotation);
-  m_events.setSignalFlags(FLAG_MODIFIED_ROTATION);
+void Transform::setRotation(const vec3& rot_degrees) {
+  vec3_rotation = rot_degrees;
+  quat_rotation = quat(glm::radians(vec3_rotation));
+  flags.setSignalFlags(MODIFIED_ROTATION);
 }
 
-void Transform::setScale(const Vector3f& scale) {
+void Transform::setRotation(const quat& rotation) {
+  quat_rotation = rotation;
+  vec3_rotation = glm::degrees(glm::eulerAngles(quat_rotation));
+  flags.setSignalFlags(MODIFIED_ROTATION);
+}
+
+void Transform::setScale(const vec3& scale) {
   vec3_scale = scale;
-  m_events.setSignalFlags(FLAG_MODIFIED_SCALE);
+  flags.setSignalFlags(MODIFIED_SCALE);
 }
 
-void Transform::setPivot(const Vector3f& pivot) {
+void Transform::setPivot(const vec3& pivot) {
   vec3_pivot = pivot;
-  m_events.setSignalFlags(FLAG_MODIFIED_PIVOT);
+  flags.setSignalFlags(MODIFIED_PIVOT);
 }
 
 void Transform::print() const {
-  fmt::println("Transform:");
-  vec3_position.print();
-  vec3_rotation.print();
-  vec3_scale.print();
-  vec3_pivot.print();
-  fmt::println("");
+  fmt::print("Transform: {{\n\tpos: ({},{},{})\n\trot: ({},{},{},{})\n\tsca: ({},{},{})\n\tpiv: ({},{},{})\n}}\n", 
+               vec3_position.x, vec3_position.y, vec3_position.z, 
+               quat_rotation.w, quat_rotation.x, quat_rotation.y, quat_rotation.z,
+               vec3_scale.x, vec3_scale.y, vec3_scale.z, 
+               vec3_pivot.x, vec3_pivot.y, vec3_pivot.z 
+             );
 }
 
-const Vector3f& Transform::getScale() const {
+const vec3& Transform::getScale() const {
   return vec3_scale;
 }
 
-const Vector3f& Transform::getPosition() const {
+const vec3& Transform::getPosition() const {
   return vec3_position;
 }
 
-const Vector3f& Transform::getRotation() const {
+const vec3& Transform::getRotation() const {
   return vec3_rotation;
 }
 
-const Vector3f& Transform::getPivot() const {
+const vec3& Transform::getPivot() const {
   return vec3_pivot;
 }
 
-const Vector3f Transform::right() const {
-  return quat_rotation.matrix().rowVector0();
+const vec3 Transform::right() const {
+  return quat_rotation * VEC3_RIGHT;
 }
 
-const Vector3f Transform::up() const {
-  return quat_rotation.matrix().rowVector1();
+const vec3 Transform::up() const {
+  return quat_rotation * VEC3_UP;
 }
 
-const Vector3f Transform::forward() const {
-  return quat_rotation.matrix().rowVector2();
+const vec3 Transform::forward() const {
+  return quat_rotation * VEC3_FORWARD;
 }
 
-const Matrix4& Transform::matrix() const {
+const mat4& Transform::matrix() const {
   return mat4_model;
 }
 
-const Quaternion& Transform::quaternion() const {
+const quat& Transform::quaternion() const {
   return quat_rotation;
 }
 
 bool Transform::onPositionChange() const {
-  return m_events.getEventFlags(FLAG_MODIFIED_POSITION);
+  return flags.getEventFlags(MODIFIED_POSITION);
 }
 
 bool Transform::onRotationChange() const {
-  return m_events.getEventFlags(FLAG_MODIFIED_ROTATION);
+  return flags.getEventFlags(MODIFIED_ROTATION);
 }
 
 bool Transform::onScaleChange() const {
-  return m_events.getEventFlags(FLAG_MODIFIED_SCALE);
+  return flags.getEventFlags(MODIFIED_SCALE);
 }
 
 bool Transform::onPivotChange() const {
-  return m_events.getEventFlags(FLAG_MODIFIED_PIVOT);
+  return flags.getEventFlags(MODIFIED_PIVOT);
 }
 
 bool Transform::onChange() const {
-  return m_events.hasEventFlags();
+  return flags.hasEventFlags();
 }
