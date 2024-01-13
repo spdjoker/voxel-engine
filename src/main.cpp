@@ -48,36 +48,30 @@ int main() {
   int uCameraMatrix = flatShader.getUniform("uCameraMatrix");
   int uModelMatrix = flatShader.getUniform("uModelMatrix");
 
-  vec3 camera_pos = vec3(0.0f, 0.0f, -3.0f);
-  vec3 camera_dir = vec3(0.0f, 0.0f, 1.0f);
-  vec3 world_up = vec3(0.0f, 1.0f, 0.0f);
-
-  mat4 view_matrix = glm::lookAtLH(camera_pos, camera_pos + camera_dir, world_up);
-
-  float fov = 45.0f;
-  float aspectRatio = (float)app.windowSize().x / (float)app.windowSize().y;
-  float nearPlane = 0.1f;
-  float farPlane = 100.0f;
-
-  mat4 proj_matrix = glm::perspectiveLH(fov, aspectRatio, nearPlane, farPlane);
-
   enum CAMERA_MOVEMENT {
     TRANSLATE_X   = 1,
     TRANSLATE_Y   = 2,
     TRANSLATE_Z   = 4,
     TRANSLATE_XY  = TRANSLATE_X  | TRANSLATE_Y,
     TRANSLATE_XZ  = TRANSLATE_X  | TRANSLATE_Z,
-    TRANSLATE_XYZ = TRANSLATE_XY | TRANSLATE_Z
+    TRANSLATE_XYZ = TRANSLATE_XY | TRANSLATE_Z,
+    ROTATE_X      = 8,
+    ROTATE_Y      = 16,
+    ROTATE_XY     = ROTATE_X | ROTATE_Y
   };
-
-  float camera_speed = 5.0f;
-  flag8 camera_update;
-  vec3 camera_velocity(0.0f, 0.0f, 0.0f);
-
-  float tmpf;
 
   Camera camera(Transform(vec3(1.0f,0.0f,-3.0f)));
   camera.perspective(45.0f, (float)app.windowSize().x / (float)app.windowSize().y, 0.1f, 100.0f);
+
+  const float camera_move_speed = 5.0f;
+  const float camera_rot_speed = 50.0f;
+
+  flag8 move_flags;
+
+  vec3 camera_velocity(0.0f, 0.0f, 0.0f);
+  float pitch = 0.0f, yaw = 0.0f;
+  float tmpf;
+
   Transform transform(vec3(0.0f,0.0f,0.0f));
   vec3 flatColor(0.0f, 1.0f, 1.0f);
 
@@ -90,41 +84,66 @@ int main() {
     }
 
     if (app.input().onKey(KeyCode::D)) {
-      camera_velocity.x += 1;
-      camera_update.toggleSignalFlags(TRANSLATE_X);
+      camera_velocity += camera.transform().right();
+      move_flags.toggleSignalFlags(TRANSLATE_X);   // CAMERA RIGHT
     }
     if (app.input().onKey(KeyCode::A)) {
-      camera_velocity.x -= 1;
-      camera_update.toggleSignalFlags(TRANSLATE_X);
+      camera_velocity -= camera.transform().right();
+      move_flags.toggleSignalFlags(TRANSLATE_X);   // CAMERA RIGHT
     }
     if (app.input().onKey(KeyCode::SPACE)) {
-      camera_velocity.y += 1;
-      camera_update.toggleSignalFlags(TRANSLATE_Y);
+      camera_velocity += VEC3_UP;                     // WORLD UP
+      move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
     if (app.input().onKey(KeyCode::LEFT_SHIFT)) {
-      camera_velocity.y -= 1;
-      camera_update.toggleSignalFlags(TRANSLATE_Y);
+      camera_velocity -= VEC3_UP;                     // WORLD UP
+      move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
     if (app.input().onKey(KeyCode::W)) {
-      camera_velocity.z += 1;
-      camera_update.toggleSignalFlags(TRANSLATE_Z);
+      camera_velocity += camera.transform().forward();
+      move_flags.toggleSignalFlags(TRANSLATE_Z);   // TODO: Project camera forward onto world forward
     }
     if (app.input().onKey(KeyCode::S)) {
-      camera_velocity.z -= 1;
-      camera_update.toggleSignalFlags(TRANSLATE_Z);
+      camera_velocity -= camera.transform().forward();
+      move_flags.toggleSignalFlags(TRANSLATE_Z);   // TODO: Project camera forward onto world forward
     }
-    if (camera_update.hasSignalFlags()) {
+    if (app.input().onKey(KeyCode::E)) {
+      yaw += 1.0f;
+      move_flags.toggleSignalFlags(ROTATE_Y);
+    }
+    if (app.input().onKey(KeyCode::Q)) {
+      yaw -= 1.0f;
+      move_flags.toggleSignalFlags(ROTATE_Y);
+    }
+    if (app.input().onKey(KeyCode::R) && camera.transform().getRotation().x > -85.0f) {
+      pitch += 1.0f;
+      move_flags.toggleSignalFlags(ROTATE_X);
+    }
+    if (app.input().onKey(KeyCode::F) && camera.transform().getRotation().x < 85.0f) {
+      pitch -= 1.0f;
+      move_flags.toggleSignalFlags(ROTATE_X);
+    }
+    if (move_flags.hasSignalFlags()) {
       // If both X and Z translations need to happen, normalize the horizontal movement
-      if (camera_update.hasAllSignalFlags(TRANSLATE_XZ)) {
+      if (move_flags.hasAllSignalFlags(TRANSLATE_XZ)) {
         tmpf = camera_velocity.y;
         camera_velocity = glm::normalize(vec3(camera_velocity.x, 0.0f, camera_velocity.z));
         camera_velocity.y = tmpf;
       }
-      if (camera_update.hasAnySignalFlags(TRANSLATE_XYZ)) {
-        camera.transform().translate(camera_velocity * camera_speed * app.deltaTime());
+      if (move_flags.hasAnySignalFlags(TRANSLATE_XYZ)) {
+        camera.transform().translate(camera_velocity * camera_move_speed * app.deltaTime());
         camera_velocity = VEC3_ZERO;
       }
-      camera_update.processSignalFlags();
+      if (move_flags.hasAnySignalFlags(ROTATE_XY)) {
+        tmpf = pitch * camera_rot_speed * app.deltaTime();
+        if (glm::abs(camera.transform().getRotation().x + tmpf) > 85.0f) {
+          tmpf = 0.0f;
+        } 
+        camera.transform().rotate(vec3(tmpf, yaw * camera_rot_speed * app.deltaTime(), 0.0f));
+        yaw = 0.0f;
+        pitch = 0.0f;
+      }
+      move_flags.processSignalFlags();
     }
 
     flatShader.activate();

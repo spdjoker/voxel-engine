@@ -22,7 +22,7 @@ void Camera::update() {
 
   if (flags.hasSignalFlags() || m_transform.onChange()) {
     // Invert the forward vector of the rotation matrix.
-    mat4_view = glm::lookAtLH(m_transform.getPosition(), m_transform.getPosition() + m_transform.quaternion() * VEC3_FORWARD, VEC3_UP);
+    mat4_view = glm::lookAtLH(m_transform.getPosition(), m_transform.getPosition() + m_transform.forward(), VEC3_UP);
     mat4_camera = mat4_projection * mat4_view;
 
     flags.processSignalFlags();
