@@ -63,13 +63,14 @@ int main() {
   Camera camera(Transform(vec3(1.0f,0.0f,-3.0f)));
   camera.perspective(45.0f, (float)app.windowSize().x / (float)app.windowSize().y, 0.1f, 100.0f);
 
-  const float camera_move_speed = 5.0f;
-  const float camera_rot_speed = 50.0f;
+  const float camera_move_speed = 8.0f;
+  const float camera_rot_speed = 70.0f;
 
   flag8 move_flags;
 
   vec3 camera_velocity(0.0f, 0.0f, 0.0f);
-  float pitch = 0.0f, yaw = 0.0f;
+  vec3 camera_rotation(0.0f, 0.0f, 0.0f);
+  // float pitch = 0.0f, yaw = 0.0f;
   float tmpf;
 
   Transform transform(vec3(0.0f,0.0f,0.0f));
@@ -83,49 +84,51 @@ int main() {
       app.quit();
     }
 
-    if (app.input().onKey(KeyCode::D)) {
+    if (app.input().onKey(KeyCode::D)) {            // CAMERA FORWARD
       camera_velocity += camera.transform().right();
-      move_flags.toggleSignalFlags(TRANSLATE_X);   // CAMERA RIGHT
+      move_flags.toggleSignalFlags(TRANSLATE_X);   
     }
-    if (app.input().onKey(KeyCode::A)) {
+    if (app.input().onKey(KeyCode::A)) {            // CAMERA FORWARD
       camera_velocity -= camera.transform().right();
-      move_flags.toggleSignalFlags(TRANSLATE_X);   // CAMERA RIGHT
+      move_flags.toggleSignalFlags(TRANSLATE_X);  
     }
-    if (app.input().onKey(KeyCode::SPACE)) {
-      camera_velocity += VEC3_UP;                     // WORLD UP
-      move_flags.toggleSignalFlags(TRANSLATE_Y);
-    }
-    if (app.input().onKey(KeyCode::LEFT_SHIFT)) {
-      camera_velocity -= VEC3_UP;                     // WORLD UP
-      move_flags.toggleSignalFlags(TRANSLATE_Y);
-    }
-    if (app.input().onKey(KeyCode::W)) {
+    if (app.input().onKey(KeyCode::W)) {            // Projection of CAMERA FORWARD on xz-plane
       camera_velocity += camera.transform().forward();
-      move_flags.toggleSignalFlags(TRANSLATE_Z);   // TODO: Project camera forward onto world forward
+      camera_velocity.y = 0.0f;
+      move_flags.toggleSignalFlags(TRANSLATE_Z);
     }
-    if (app.input().onKey(KeyCode::S)) {
+    if (app.input().onKey(KeyCode::S)) {            // Projection of CAMERA FORWARD on xz-plane
       camera_velocity -= camera.transform().forward();
-      move_flags.toggleSignalFlags(TRANSLATE_Z);   // TODO: Project camera forward onto world forward
+      camera_velocity.y = 0.0f;
+      move_flags.toggleSignalFlags(TRANSLATE_Z);
+    }
+    if (app.input().onKey(KeyCode::SPACE)) {        // WORLD UP
+      camera_velocity += VEC3_UP;
+      move_flags.toggleSignalFlags(TRANSLATE_Y);
+    }
+    if (app.input().onKey(KeyCode::LEFT_SHIFT)) {   // WORLD UP
+      camera_velocity -= VEC3_UP;
+      move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
     if (app.input().onKey(KeyCode::E)) {
-      yaw += 1.0f;
+      camera_rotation.y += camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_Y);
     }
     if (app.input().onKey(KeyCode::Q)) {
-      yaw -= 1.0f;
+      camera_rotation.y -= camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_Y);
     }
-    if (app.input().onKey(KeyCode::R) && camera.transform().getRotation().x > -85.0f) {
-      pitch += 1.0f;
+    if (app.input().onKey(KeyCode::F) && camera.transform().getRotation().x < 85.0f) {
+      camera_rotation.x += camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_X);
     }
-    if (app.input().onKey(KeyCode::F) && camera.transform().getRotation().x < 85.0f) {
-      pitch -= 1.0f;
+    if (app.input().onKey(KeyCode::R) && camera.transform().getRotation().x > -85.0f) {
+      camera_rotation.x -= camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_X);
     }
     if (move_flags.hasSignalFlags()) {
       // If both X and Z translations need to happen, normalize the horizontal movement
-      if (move_flags.hasAllSignalFlags(TRANSLATE_XZ)) {
+      if (move_flags.hasAnySignalFlags(TRANSLATE_XZ)) {
         tmpf = camera_velocity.y;
         camera_velocity = glm::normalize(vec3(camera_velocity.x, 0.0f, camera_velocity.z));
         camera_velocity.y = tmpf;
@@ -135,13 +138,19 @@ int main() {
         camera_velocity = VEC3_ZERO;
       }
       if (move_flags.hasAnySignalFlags(ROTATE_XY)) {
-        tmpf = pitch * camera_rot_speed * app.deltaTime();
-        if (glm::abs(camera.transform().getRotation().x + tmpf) > 85.0f) {
-          tmpf = 0.0f;
-        } 
-        camera.transform().rotate(vec3(tmpf, yaw * camera_rot_speed * app.deltaTime(), 0.0f));
-        yaw = 0.0f;
-        pitch = 0.0f;
+        camera_rotation.x *= app.deltaTime();
+        camera_rotation.y *= app.deltaTime();
+        camera_rotation   += camera.transform().getRotation();
+
+        // Clamp pitch to prevent 360s
+        if (camera_rotation.x > 88.0f) {
+          camera_rotation.x = 88.0f;
+        } else if (camera_rotation.x < -88.0f) {
+          camera_rotation.x = -88.0f;
+        }
+        
+        camera.transform().setRotation(camera_rotation);
+        camera_rotation = VEC3_ZERO;
       }
       move_flags.processSignalFlags();
     }
