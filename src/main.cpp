@@ -13,9 +13,29 @@
 #include <GL/glew.h>
 #include <iostream>
 
+void information() {
+  fmt::print(
+    "[  ESC  ] - Close Window\n"
+    "\nMovement:\n"
+    "[   W   ] - Move Forward (XZ Plane)\n"
+    "[   A   ] - Move Left\n"
+    "[   S   ] - Move Backward (XZ Plane)\n"
+    "[   D   ] - Move Right\n"
+    "[ SPACE ] - Move Up (Y-Axis)\n"
+    "[L-SHIFT] - Move Up (Y-Axis)\n"
+    "\nCamera:\n"
+    "[   R   ] - Look Up\n"
+    "[   F   ] - Look Down\n"
+    "[   Q   ] - Look Left\n"
+    "[   E   ] - Look Right\n"
+  );
+}
+
 int main() {
   Application app;
   app.init("My Application", 800, 600);
+
+  information();
 
   // app.init("My Fullscreen Application");
 
@@ -70,8 +90,7 @@ int main() {
 
   vec3 camera_velocity(0.0f, 0.0f, 0.0f);
   vec3 camera_rotation(0.0f, 0.0f, 0.0f);
-  // float pitch = 0.0f, yaw = 0.0f;
-  float tmpf;
+  float tmpf;   // Pre-declared float used in main loop to reduce reallocation.
 
   Transform transform(vec3(0.0f,0.0f,0.0f));
   vec3 flatColor(0.0f, 1.0f, 1.0f);
@@ -84,11 +103,11 @@ int main() {
       app.quit();
     }
 
-    if (app.input().onKey(KeyCode::D)) {            // CAMERA FORWARD
+    if (app.input().onKey(KeyCode::D)) {            // CAMERA RIGHT
       camera_velocity += camera.transform().right();
       move_flags.toggleSignalFlags(TRANSLATE_X);   
     }
-    if (app.input().onKey(KeyCode::A)) {            // CAMERA FORWARD
+    if (app.input().onKey(KeyCode::A)) {            // Inverted CAMERA RIGHT
       camera_velocity -= camera.transform().right();
       move_flags.toggleSignalFlags(TRANSLATE_X);  
     }
@@ -106,7 +125,7 @@ int main() {
       camera_velocity += VEC3_UP;
       move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
-    if (app.input().onKey(KeyCode::LEFT_SHIFT)) {   // WORLD UP
+    if (app.input().onKey(KeyCode::LEFT_SHIFT)) {   // Inverted WORLD UP
       camera_velocity -= VEC3_UP;
       move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
