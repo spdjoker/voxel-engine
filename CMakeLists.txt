@@ -15,7 +15,7 @@ include_directories(src)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
-# find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
+find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
 # set(GLFW_PATH ${EXTERNAL_PATH}/glfw-3.3.8)
 # set(GLFW_LIBRARIES ${GLFW_PATH}/lib/x64/libglfw3.a)
 FetchContent_Declare(
@@ -29,7 +29,7 @@ FetchContent_MakeAvailable(glfw)
 
 set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
 set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
-include_directories(${GLEW_PATH}/include)
+# include_directories(${GLEW_PATH}/include)
 
 FetchContent_Declare(
   fmt 

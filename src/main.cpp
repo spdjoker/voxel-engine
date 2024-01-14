@@ -80,7 +80,7 @@ int main() {
     ROTATE_XY     = ROTATE_X | ROTATE_Y
   };
 
-  Camera camera(Transform(vec3(1.0f,0.0f,-3.0f)));
+  Camera camera(Transform(vec3(0.0f,0.0f,-3.0f)));
   camera.perspective(45.0f, (float)app.windowSize().x / (float)app.windowSize().y, 0.1f, 100.0f);
 
   const float camera_move_speed = 8.0f;
