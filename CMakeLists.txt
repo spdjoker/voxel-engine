@@ -15,10 +15,10 @@ include_directories(src)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
+add_subdirectory(external/glfw) # Tag 3.3.8
+add_subdirectory(external/glm) # Commit b06b775
+
 find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
-
-add_subdirectory(external/glfw)
-
 set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
 set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
 # include_directories(${GLEW_PATH}/include)
@@ -30,16 +30,6 @@ FetchContent_Declare(
   GIT_SHALLOW ON
   )
 FetchContent_MakeAvailable(fmt)
-
-FetchContent_Declare(
-  glm 
-  GIT_REPOSITORY "https://github.com/g-truc/glm/"
-  GIT_TAG "b06b775"
-  GIT_SHALLOW ON
-  )
-FetchContent_MakeAvailable(glm)
-
-# file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 
 set(SOURCES
   src/main.cpp

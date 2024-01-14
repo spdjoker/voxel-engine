@@ -1,2 +1,4 @@
 @echo off
-cd build && make && cd ..
+pushd build
+make
+popd
