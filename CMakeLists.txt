@@ -15,21 +15,16 @@ include_directories(src)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
+add_subdirectory(external/glew) # Tag glew-cmake-2.2.0
+
+add_subdirectory(external/fmt)  # Tag 10.2.1
 add_subdirectory(external/glfw) # Tag 3.3.8
-add_subdirectory(external/glm) # Commit b06b775
+add_subdirectory(external/glm)  # Commit b06b775
 
-find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
-set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
-set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
+# find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
+# set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
+# set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
 # include_directories(${GLEW_PATH}/include)
-
-FetchContent_Declare(
-  fmt 
-  GIT_REPOSITORY "https://github.com/fmtlib/fmt/"
-  GIT_TAG "10.2.1"
-  GIT_SHALLOW ON
-  )
-FetchContent_MakeAvailable(fmt)
 
 set(SOURCES
   src/main.cpp
@@ -75,13 +70,9 @@ add_executable(${BUILD_NAME} ${SOURCES})
 
 # Add the paths to the dependency libraries
 target_link_libraries(${BUILD_NAME} PRIVATE 
-  ${GLEW_LIBRARIES}
+  libglew_static
   ${OPENGL_LIBRARIES}
+  fmt
   glfw
   glm
-  fmt
   )
-target_include_directories(${BUILD_NAME} PRIVATE 
-  ${GLEW_PATH}/include
-  )
-target_compile_definitions(${BUILD_NAME} PRIVATE GLEW_STATIC)
