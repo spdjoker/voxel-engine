@@ -1,29 +1,28 @@
 #ifndef JKR_COMPONENTS_CAMERA_HPP
 #define JKR_COMPONENTS_CAMERA_HPP
 
-#include "jkr/components/transform.hpp"
-#include "jkr/types/vector3f.hpp"
+#include "transform.hpp"
+#include "jkr/types/common.hpp"
 
 class Camera {
-  Matrix4 mat4_projection;
-  Matrix4 mat4_view;
-  Matrix4 mat4_camera;
+  mat4 mat4_projection;
+  mat4 mat4_view;
+  mat4 mat4_camera;
 
   Transform m_transform;
-  EventFlags1b m_events;
+  flag8 flags;
 
 public:
-  Camera();
+  Camera(const Transform& transform);
   
-  void perspective(float FOV, float aspect, float near, float far);
+  void perspective(float fovy, float aspect, float near, float far);
   void update();
 
   Transform& transform();
 
-  const Matrix4& projectionMatrix() const;
-  const Matrix4& viewMatrix() const;
-  const Matrix4& matrix() const;
-
+  const mat4& matrix() const;
+  const mat4& matrix_view() const;
+  const mat4& matrix_projection() const;
 };
 
 #endif

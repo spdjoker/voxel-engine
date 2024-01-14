@@ -89,20 +89,16 @@ int Shader::getUniform(const char *uniform) {
   return glGetUniformLocation(shaderID, uniform);
 }
 
-void Shader::setUniformMat4(int uniform, const Matrix4& mat4) {
-  glUniformMatrix4fv(uniform, 1, GL_FALSE, mat4.ptr());
+void Shader::setUniformMat4(int uniform, const mat4& mat4) {
+  glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(mat4));
 }
 
-void Shader::setUniformVec3f(int uniform, const Vector3f* vec3, int count) {
-  glUniform3fv(uniform, count, (float*)vec3);
+void Shader::setUniformVec3f(int uniform, const vec3* vec3, int count) {
+  glUniform3fv(uniform, count, glm::value_ptr(*vec3));
 }
 
-void Shader::setUniformVec3f(int uniform, const Vector3f& vec3) {
-  glUniform3fv(uniform, 1, vec3.ptr());
-}
-
-void Shader::setUniformVec3f(int uniform, const Color3f& color3) {
-  glUniform3fv(uniform, 1, color3.ptr());
+void Shader::setUniformVec3f(int uniform, const vec3& vec3) {
+  glUniform3fv(uniform, 1, glm::value_ptr(vec3));
 }
 
 void Shader::setUniform1i(int uniform, int unit) {

@@ -1,40 +1,33 @@
 #include "camera.hpp"
-#include "fmt/core.h"
-#include "jkr/util/math.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "jkr/types/common.hpp"
+#include <fmt/core.h>
 
-constexpr unsigned char FLAG_MODIFIED_PROJECTION_MATRIX = 1;
-constexpr unsigned char FLAG_MODIFIED_VIEW_MATRIX = 2;
-constexpr unsigned char FLAG_MODIFIED_ROTATION_MATRIX = 4;
+enum FLAGS {
+  MODIFIED_PROJECTION = 1,
+  MODIFIED_VIEW = 2
+};
 
-Camera::Camera() : 
-  mat4_projection(), mat4_view(), mat4_camera(), m_transform(), 
-  m_events(FLAG_MODIFIED_PROJECTION_MATRIX | FLAG_MODIFIED_VIEW_MATRIX | FLAG_MODIFIED_ROTATION_MATRIX) {}
+Camera::Camera(const Transform& transform) : 
+  mat4_projection(MAT4_IDENTITY), mat4_view(MAT4_IDENTITY), mat4_camera(), 
+  m_transform(transform), flags(MODIFIED_PROJECTION | MODIFIED_VIEW) {}
 
-void Camera::perspective(float FOV, float aspect, float near, float far) {
-  float tanHalfFOV = std::tan(radians(FOV) / 2.0f) ;
-  mat4_projection = {
-    1.0f / (aspect * tanHalfFOV), 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f / tanHalfFOV, 0.0f, 0.0f,
-    0.0f, 0.0f, -(far + near)/(far - near), -2 * far * near / (far - near),
-    0.0f, 0.0f, -1.0f, 0.0f
-  };
-  m_events.setSignalFlags(FLAG_MODIFIED_PROJECTION_MATRIX);
+void Camera::perspective(float fovy, float aspect, float near, float far) {
+  mat4_projection = glm::perspectiveLH(fovy, aspect, near, far);
+  flags.setSignalFlags(MODIFIED_PROJECTION);
 }
 
 void Camera::update() {
   m_transform.update();
 
-  if (m_events.hasSignalFlags() || m_transform.onChange()) {
+  if (flags.hasSignalFlags() || m_transform.onChange()) {
     // Invert the forward vector of the rotation matrix.
-    mat4_view = Matrix4::Identity.translated(-m_transform.getPivot());
-    mat4_view.rotate(m_transform.right(), m_transform.up(), -m_transform.forward());
-    mat4_view.scale(m_transform.getScale());
-    mat4_view.translate(-m_transform.getPosition() - m_transform.getPivot());
-    
+    mat4_view = glm::lookAtLH(m_transform.getPosition(), m_transform.getPosition() + m_transform.forward(), VEC3_UP);
     mat4_camera = mat4_projection * mat4_view;
-    m_events.processSignalFlags();
-  } else if (m_events.hasEventFlags()) {
-    m_events.clearEventFlags();
+
+    flags.processSignalFlags();
+  } else if (flags.hasEventFlags()) {
+    flags.clearEventFlags();
   }
 }
 
@@ -42,14 +35,14 @@ Transform& Camera::transform() {
   return m_transform;
 }
 
-const Matrix4& Camera::projectionMatrix() const {
-  return mat4_projection;
-}
-
-const Matrix4& Camera::matrix() const {
+const mat4& Camera::matrix() const {
   return mat4_camera;
 }
 
-const Matrix4& Camera::viewMatrix() const {
+const mat4& Camera::matrix_projection() const {
+  return mat4_projection;
+}
+
+const mat4& Camera::matrix_view() const {
   return mat4_view;
 }

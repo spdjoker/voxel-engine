@@ -2,7 +2,7 @@
 #define JKR_APPLICATION_HPP
 
 #include "jkr/engine/input.hpp"
-#include "jkr/types/vector2.hpp"
+#include "jkr/types/common.hpp"
 
 class GLFWwindow;
 
@@ -13,7 +13,7 @@ class Application {
   float lastFrameTime;
   float m_deltaTime;
 
-  Vector2i m_windowSize;
+  ivec2 m_windowSize;
 
   int initGLFW();
   int configure(int width, int height);
@@ -38,7 +38,7 @@ public:
 
   void quit();
 
-  const Vector2i& windowSize() const;
+  const ivec2& windowSize() const;
   const Input& input() const;
 
   float deltaTime() const;

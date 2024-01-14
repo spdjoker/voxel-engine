@@ -15,7 +15,7 @@ void Input::clear() {
   for (unsigned int i = 0; i < states.size(); i++) {
     states[i] = (states[i] << 1) | (states[i] & 1);
   }
-  mouseDelta.set(0,0);
+  mouseDelta = vec2(0,0);
 }
 
 void Input::setKeyPressed(int key) {
@@ -39,8 +39,8 @@ void Input::setMouseButtonReleased(int button) {
 }
 
 void Input::setMousePosition(float xpos, float ypos) {
-  mouseDelta.set(xpos - mousePosition.getX(), ypos - mousePosition.getY());
-  mousePosition.set(xpos, ypos);
+  mouseDelta = vec2(xpos - mousePosition.x, ypos - mousePosition.y);
+  mousePosition = ivec2(xpos, ypos);
 }
 
 bool Input::onKey(KeyCode key) const {
@@ -72,13 +72,13 @@ bool Input::onMouseButtonDown(MouseButton button) const {
 }
 
 bool Input::onMouseMove() const {
-  return mouseDelta.getX() != 0 || mouseDelta.getY() != 0;
+  return mouseDelta.x != 0 || mouseDelta.y != 0;
 }
 
-Vector2f Input::getMousePosition() const {
+vec2 Input::getMousePosition() const {
   return mousePosition;
 }
 
-Vector2f Input::getMouseDelta() const {
+vec2 Input::getMouseDelta() const {
   return mouseDelta;
 }
