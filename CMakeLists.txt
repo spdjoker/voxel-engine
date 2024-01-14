@@ -16,16 +16,8 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
 find_path(EXTERNAL_PATH NAMES glfw-3.3.8/)
-# set(GLFW_PATH ${EXTERNAL_PATH}/glfw-3.3.8)
-# set(GLFW_LIBRARIES ${GLFW_PATH}/lib/x64/libglfw3.a)
-FetchContent_Declare(
-  glfw
-  GIT_REPOSITORY "https://github.com/glfw/glfw"
-  GIT_TAG "3.3.9"
-  GIT_SHALLOW ON
-)
-FetchContent_MakeAvailable(glfw)
-# include_directories(${GLFW_PATH}/include)
+
+add_subdirectory(external/glfw)
 
 set(GLEW_PATH ${EXTERNAL_PATH}/glew-2.1.0)
 set(GLEW_LIBRARIES ${GLEW_PATH}/lib/x64/libglew32s.a)
