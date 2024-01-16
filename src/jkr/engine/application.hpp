@@ -4,7 +4,7 @@
 #include "jkr/engine/input.hpp"
 #include "jkr/types/common.hpp"
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class Application {
   GLFWwindow* window;
