@@ -5,12 +5,18 @@
 #include <jkr/types/common.hpp>
 
 class Shader {
-  unsigned int shaderID;
+  unsigned int program;
+  unsigned int shader_vert;
+  unsigned int shader_frag;
+  
+  const char* vertexFile;
+  const char* fragmentFile;
 
 public:
   Shader(const char* vertexFile, const char* fragmentFile);
   ~Shader();
 
+  void reload();
   void activate();
   
   int getUniform(const char* name);

@@ -15,19 +15,15 @@
 
 void information() {
   fmt::print(
-    "[  ESC  ] - Close Window\n"
+    "[    ESC    ] - Close Window\n"
     "\nMovement:\n"
-    "[   W   ] - Move Forward (XZ Plane)\n"
-    "[   A   ] - Move Left\n"
-    "[   S   ] - Move Backward (XZ Plane)\n"
-    "[   D   ] - Move Right\n"
-    "[ SPACE ] - Move Up (Y-Axis)\n"
-    "[L-SHIFT] - Move Up (Y-Axis)\n"
-    "\nCamera:\n"
-    "[   R   ] - Look Up\n"
-    "[   F   ] - Look Down\n"
-    "[   Q   ] - Look Left\n"
-    "[   E   ] - Look Right\n"
+    "[     W     ] - Move Forward (XZ Plane)\n"
+    "[     A     ] - Move Left\n"
+    "[     S     ] - Move Backward (XZ Plane)\n"
+    "[     D     ] - Move Right\n"
+    "[   SPACE   ] - Move Up (Y-Axis)\n"
+    "[  L-SHIFT  ] - Move Up (Y-Axis)\n"
+    "\nUse arrow keys to look around the scene...\n"
   );
 }
 
@@ -62,7 +58,7 @@ int main() {
   // Flat Vertex Data
   VAO::LinkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(vec3), (void*)0);
   
-  Shader flatShader("resources/shaders/flat-vert.glsl", "resources/shaders/flat-frag.glsl");
+  Shader flatShader("resources/shaders/chunk-vert.glsl", "resources/shaders/chunk-frag.glsl");
   flatShader.activate();
   int uColor = flatShader.getUniform("uColor");
   int uCameraMatrix = flatShader.getUniform("uCameraMatrix");
@@ -103,6 +99,10 @@ int main() {
       app.quit();
     }
 
+    if (app.input().onKeyDown(KeyCode::X)) {
+      flatShader.reload();
+    }
+
     if (app.input().onKey(KeyCode::D)) {            // CAMERA RIGHT
       camera_velocity += camera.transform().right();
       move_flags.toggleSignalFlags(TRANSLATE_X);   
@@ -129,19 +129,19 @@ int main() {
       camera_velocity -= VEC3_UP;
       move_flags.toggleSignalFlags(TRANSLATE_Y);
     }
-    if (app.input().onKey(KeyCode::E)) {
+    if (app.input().onKey(KeyCode::RIGHT)) {
       camera_rotation.y += camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_Y);
     }
-    if (app.input().onKey(KeyCode::Q)) {
+    if (app.input().onKey(KeyCode::LEFT)) {
       camera_rotation.y -= camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_Y);
     }
-    if (app.input().onKey(KeyCode::F) && camera.transform().getRotation().x < 85.0f) {
+    if (app.input().onKey(KeyCode::DOWN) && camera.transform().getRotation().x < 85.0f) {
       camera_rotation.x += camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_X);
     }
-    if (app.input().onKey(KeyCode::R) && camera.transform().getRotation().x > -85.0f) {
+    if (app.input().onKey(KeyCode::UP) && camera.transform().getRotation().x > -85.0f) {
       camera_rotation.x -= camera_rot_speed;
       move_flags.toggleSignalFlags(ROTATE_X);
     }

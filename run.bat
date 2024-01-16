@@ -1,2 +1,4 @@
 @echo off
-build\world
+pushd build 
+world
+popd
